@@ -1,6 +1,5 @@
 === Member Signup ===
 Contributors: none ATM
-Donate link: http://theaveragedev.com
 Tags: signup, user, member
 Requires at least: 3.5.1
 Tested up to: 3.6
