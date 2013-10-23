@@ -75,9 +75,13 @@ class membersignup {
 		/* Define custom functionality.
 		 * Refer To http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
 		 */
-		add_action( 'TODO', array( $this, 'action_method_name' ) );
+		add_action( 'init', array( $this, 'redirect_members' ));
+		add_action( 'init', array( $this, 'redirect_to_member_login'));
 		add_filter( 'TODO', array( $this, 'filter_method_name' ) );
 
+		// Loads the plugin accessory classes
+		require_once plugin_dir_path( __FILE__ ) .'class-user_role_checker.php';
+		require_once plugin_dir_path( __FILE__ ) . 'class-options_getter.php'
 	}
 
 	/**
@@ -218,8 +222,8 @@ class membersignup {
 
 		// get an array of blog ids
 		$sql = "SELECT blog_id FROM $wpdb->blogs
-			WHERE archived = '0' AND spam = '0'
-			AND deleted = '0'";
+		WHERE archived = '0' AND spam = '0'
+		AND deleted = '0'";
 
 		return $wpdb->get_col( $sql );
 
@@ -231,7 +235,8 @@ class membersignup {
 	 * @since    1.0.0
 	 */
 	private static function single_activate() {
-		// TODO: Define activation functionality here
+		//  add the "member" role
+		add_role( 'member', esc_html__( 'Member', $domain = $plugin_slug ), $capabilities = array() );
 	}
 
 	/**
@@ -298,29 +303,42 @@ class membersignup {
 	}
 
 	/**
-	 * NOTE:  Actions are points in the execution of a page or process
-	 *        lifecycle that WordPress fires.
-	 *
-	 *        Actions:    http://codex.wordpress.org/Plugin_API#Actions
-	 *        Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
-	 *
-	 * @since    1.0.0
+	 * Redirects user of type "member" to a custom admin page
+	 * @return none Either redirects and exit or does nothing.
 	 */
-	public function action_method_name() {
-		// TODO: Define your action hook callback here
+	public function redirect_members() {
+		if ( is_user_logged_in() ) {
+			// if the user is a member then do redirect him to the custom admin page
+			if ( membersignup_User_Role_Checker::check_user_role('member') ) {
+				$admin_page_url = membersignup_Options_Getter::get_member_admin_page_url();
+				wp_safe_redirect( $admin_page_url );
+			}
+			exit;
+		}
 	}
 
-	/**
-	 * NOTE:  Filters are points of execution in which WordPress modifies data
-	 *        before saving it or sending it to the browser.
-	 *
-	 *        Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *        Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
-	 *
-	 * @since    1.0.0
-	 */
-	public function filter_method_name() {
+	public function redirect_to_member_login(){
+		if (!is_user_logged_in()) {
+			// redirect visitors to a custom loign page set by admins
+			// code below comes from StackOverflow:
+			// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
+			global $pagenow;
+			if( 'wp-login.php' == $pagenow ) {
+  				if ( isset( $_POST['wp-submit'] ) ||   // in case of LOGIN
+    			( isset($_GET['action']) && $_GET['action']=='logout') ||   // in case of LOGOUT
+    			( isset($_GET['checkemail']) && $_GET['checkemail']=='confirm') ||   // in case of LOST PASSWORD
+    			( isset($_GET['checkemail']) && $_GET['checkemail']=='registered') ) return;    // in case of REGISTER
+  				else {
+  					$member_login_url = membersignup_Options_Getter::get_member_login_page_url();
+  					wp_redirect( $member_login_url );
+  				}
+  				exit();
+  			}
+  		}
+  	}
+
+  	public function filter_method_name() {
 		// TODO: Define your filter hook callback here
-	}
+  	}
 
-}
+  }
