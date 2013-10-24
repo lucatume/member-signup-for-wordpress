@@ -66,7 +66,7 @@ class membersignup_Options_Framework {
 		$options = new Plugin_Options_Framework_0_2_4(
 			MEMBERSIGNUP_PLUGIN_DIRNAME,
 			self::$fields,
-			array('page_title' => 'Plugin Settings') // TODO: a custom or better built title
+			array('page_title' => esc_html__( 'Member Signup settings', $domain = 'membersignup' ))
 			);
 	}
 
