@@ -181,7 +181,7 @@ class membersignup_Admin {
 		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 		 */
 		$this->plugin_screen_hook_suffix = add_options_page(
-			esc_html__( 'Member Signup settings', $domain = 'membersignup' ),
+			__( 'Member Signup settings', 'membersignup' ),
 			__( 'Member Signup', 'membersignup' ),
 			'manage_options',
 			$this->plugin_slug,
