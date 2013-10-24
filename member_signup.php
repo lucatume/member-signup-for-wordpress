@@ -49,8 +49,8 @@ require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_framework.ph
 /**
  * Require more adapter classes
  */
-require_once MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-user_role_checker.php';
-require_once MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_getter.php';
+require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-user_role_checker.php' );
+require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_getter.php' );
 
 
 /*
