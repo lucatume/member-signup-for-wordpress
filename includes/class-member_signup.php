@@ -21,6 +21,9 @@
  * @package membersignup
  * @author  theAverageDev (Luca Tumedei) <luca@theaveragedev.com>
  */
+
+define('MEMBERSIGNUP_PLUGIN_DIRNAME', dirname(__FILE__);
+
 class membersignup {
 
 	/**
