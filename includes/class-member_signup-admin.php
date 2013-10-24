@@ -77,14 +77,10 @@ class membersignup_Admin {
 		$plugin_basename = plugin_basename( plugin_dir_path( __FILE__ ) . 'membersignup.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
-		/*
-		 * Define custom functionality.
-		 *
-		 * Read more about actions and filters:
-		 * http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
+		/**
+		 * Add the plugin settings to the previously registered page
 		 */
-		add_action( 'TODO', array( $this, 'action_method_name' ) );
-		add_filter( 'TODO', array( $this, 'filter_method_name' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 	}
 
@@ -123,13 +119,13 @@ class membersignup_Admin {
 
 
 		//do not load minified styles during debug
-		$debug_postfix = '';
-		if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
-			$debug_postfix = '.min';	
-		}
-		else{
 			$debug_postfix = '';
-		}
+			if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
+				$debug_postfix = '.min';	
+			}
+			else{
+				$debug_postfix = '';
+			}
 
 			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( "assets/css/admin{$debug_postfix}.css", __FILE__ ), array(), membersignup::VERSION );
 		}
@@ -153,13 +149,13 @@ class membersignup_Admin {
 		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
 
 		//do not load minified scripts during debug
-		$debug_postfix = '';
-		if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
-			$debug_postfix = '.min';	
-		}
-		else{
 			$debug_postfix = '';
-		}
+			if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
+				$debug_postfix = '.min';	
+			}
+			else{
+				$debug_postfix = '';
+			}
 
 			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( "assets/js/admin{$debug_postfix}.js", __FILE__ ), array( 'jquery' ), membersignup::VERSION );
 		}
@@ -186,7 +182,7 @@ class membersignup_Admin {
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
-		);
+			);
 
 	}
 
@@ -209,36 +205,56 @@ class membersignup_Admin {
 		return array_merge(
 			array(
 				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', $this->plugin_slug ) . '</a>'
-			),
+				),
 			$links
-		);
+			);
 
 	}
 
 	/**
-	 * NOTE:     Actions are points in the execution of a page or process
-	 *           lifecycle that WordPress fires.
-	 *
-	 *           Actions:    http://codex.wordpress.org/Plugin_API#Actions
-	 *           Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
-	 *
-	 * @since    1.0.0
+	 * Registers the settings for the plugin
+	 * @return none
 	 */
-	public function action_method_name() {
-		// TODO: Define your action hook callback here
+	public function register_settings(){
+		register_setting( 'membersignup_options', 'membersignup_options', array($this, 'validate_options'));
+		add_settings_section( 'main_settings', __( 'Login page settings', 'membersignup' ), 'the_main_section_description', 'membersignup' );
+		add_settings_field( 'custom_member_login_page', __( 'Custom login page', 'membersignup' ), array($this, 'the_custom_login_page_select'), 'membersignup', 'main_settings' );
 	}
 
 	/**
-	 * NOTE:     Filters are points of execution in which WordPress modifies data
-	 *           before saving it or sending it to the browser.
-	 *
-	 *           Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *           Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
-	 *
-	 * @since    1.0.0
+	 * Echoes the first section description
+	 * @return none echoes in the plugin settings page
 	 */
-	public function filter_method_name() {
-		// TODO: Define your filter hook callback here
+	public function the_main_section_description(){
+		echo '';
 	}
 
+	/**
+	 * Echoes the custom login page label and select control in the plugin settings page
+	 * @return [type] [description]
+	 */
+	public function the_custom_login_page_select(){
+		$options = get_option('membersignup_options');
+		// get a list of pages
+		$pages = get_pages( array() );
+		echo '<label for="plugin_text_string">' . __( 'Select the page to redirect logins to', 'membersignup' ) . '</label>';
+		echo "<select id='plugin_text_string' name='membersignup_options[custom_member_login_page]' value='{$options['custom_member_login_page']}'>";
+		if ($pages) {
+			foreach ($pages as $page) {
+				$slug = $page->post_name;
+				$title = $page->post_title;
+				echo "<option value={$slug}" . selected( $slug, $current = $options['custom_member_login_page'] )  . ">{$title}</option>";
+			}
+		}
+		echo '</select>';
+	}
+
+	/**
+	 * Validates the options set or entered by the user
+	 * @param  string $input the input entered by the user
+	 * @return string        the validated and sanitized input
+	 */
+	public function validate_options($input){
+		return $input;
+	}
 }
