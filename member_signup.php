@@ -42,16 +42,10 @@ require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-member_signup.php' )
 require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-member_signup-admin.php' );
 
 /**
- * Require options framework adapter class
- */
-require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_framework.php');
-
-/**
  * Require more adapter classes
  */
 require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-user_role_checker.php' );
 require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_getter.php' );
-
 
 /*
  * Register hooks that are fired when the plugin is activated or deactivated.
