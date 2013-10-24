@@ -181,8 +181,8 @@ class membersignup_Admin {
 		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 		 */
 		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'Page Title', esc_html__( 'Member Signup settings', $domain = 'membersignup' ) ),
-			__( 'Menu Text', 'Member Signup' ),
+			esc_html__( 'Member Signup settings', $domain = 'membersignup' ),
+			__( 'Member Signup', 'membersignup' ),
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -196,7 +196,7 @@ class membersignup_Admin {
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
-		include_once( 'includes/views/admin.php' );
+		include_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/views/admin.php' );
 	}
 
 	/**
