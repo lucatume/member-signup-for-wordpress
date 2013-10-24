@@ -62,7 +62,7 @@ class membersignup_Options_Framework {
 	 */
 	public static function options_init(){
 		global $options;
-		require_once MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/frameworks/plugin-options-framework/plugin-options-framework.php';
+		require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/frameworks/plugin-options-framework/plugin-options-framework.php' );
 		$options = new Plugin_Options_Framework_0_2_4(
 			MEMBERSIGNUP_PLUGIN_DIRNAME,
 			self::$fields,
