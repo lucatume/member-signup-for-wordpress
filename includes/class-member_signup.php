@@ -22,9 +22,6 @@
  * @author  theAverageDev (Luca Tumedei) <luca@theaveragedev.com>
  */
 
-define( 'MEMBERSIGNUP_PLUGIN_DIRPATH', plugin_dir_path( __FILE__ ) );
-define( 'MEMBERSIGNUP_PLUGIN_DIRNAME', dirname(__FILE__) );
-
 class membersignup {
 
 	/**
@@ -82,10 +79,6 @@ class membersignup {
 		// add_action( 'init', array( $this, 'redirect_members' ));
 		// add_action( 'init', array( $this, 'redirect_to_member_login'));
 		// add_filter( 'TODO', array( $this, 'filter_method_name' ) );
-
-		// Loads the plugin accessory classes
-		require_once plugin_dir_path( __FILE__ ) . 'class-user_role_checker.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-options_getter.php';
 	}
 
 	/**
