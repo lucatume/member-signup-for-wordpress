@@ -18,6 +18,10 @@
 	<?php screen_icon(); ?>
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-	<!-- TODO: Provide markup for your options page here. -->
+<form action="options.php" method="post">
+	<?php settings_fields( 'membersignup_options' ); ?>
+	<?php do_settings_sections( 'membersignup' ); ?>
+	<input name="<?php esc_attr_e( 'Submit', 'membersignup' ); ?>" type="Submit" value="<?php esc_attr_e( 'Save Changes', 'membersignup' ); ?>">
+</form>
 
 </div>
