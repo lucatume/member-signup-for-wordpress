@@ -73,12 +73,10 @@ class membersignup {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		/* Define custom functionality.
-		 * Refer To http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
+		/**
+		 * Add a shortcode to output the member login form in the page
 		 */
-		// add_action( 'init', array( $this, 'redirect_members' ));
-		// add_action( 'init', array( $this, 'redirect_to_member_login'));
-		// add_filter( 'TODO', array( $this, 'filter_method_name' ) );
+		add_shortcode( 'membersignup', array( $this, 'display_login_form') );
 	}
 
 	/**
@@ -300,6 +298,16 @@ class membersignup {
 	}
 
 	/**
+	 * Returns the custom member login form markup
+	 * @param  array $atts    The shortcode attributes
+	 * @param  string $content The content enclosed by the shortcode
+	 * @return string          The markup to display in the page
+	 */
+	public function display_login_form( $atts, $content='' ){
+		return '<form id="member_login_form">Member login form</form>';
+	}
+
+	/**
 	 * Redirects user of type "member" to a custom admin page
 	 * @return none Either redirects and exit or does nothing.
 	 */
@@ -333,9 +341,4 @@ class membersignup {
   			}
   		}
   	}
-
-  	public function filter_method_name() {
-		// TODO: Define your filter hook callback here
-  	}
-
   }
