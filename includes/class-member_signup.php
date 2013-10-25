@@ -77,6 +77,11 @@ class membersignup {
 		 * Add a shortcode to output the member login form in the page
 		 */
 		add_shortcode( 'membersignup', array( $this, 'display_login_form') );
+
+		/**
+		 * Add an action to redirect users to the member login page
+		 */
+		add_action( 'wp_loaded', array( $this, 'redirect_to_member_login' ) );
 	}
 
 	/**
@@ -308,37 +313,34 @@ class membersignup {
 	}
 
 	/**
-	 * Redirects user of type "member" to a custom admin page
-	 * @return none Either redirects and exit or does nothing.
+	 * Redirects not logged-in visitors to a custom login page
+	 * @return none
 	 */
-	public function redirect_members() {
-		if ( is_user_logged_in() ) {
-			// if the user is a member then do redirect him to the custom admin page
-			if ( membersignup_User_Role_Checker::check_user_role('member') ) {
-				$admin_page_url = membersignup_Options_Getter::get_member_admin_page_url();
-				wp_safe_redirect( $admin_page_url );
-			}
-			exit;
-		}
-	}
-
 	public function redirect_to_member_login(){
-		if (!is_user_logged_in()) {
-			// redirect visitors to a custom loign page set by admins
-			// code below comes from StackOverflow:
-			// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
-			global $pagenow;
-			if( 'wp-login.php' == $pagenow ) {
-  				if ( isset( $_POST['wp-submit'] ) ||   // in case of LOGIN
-    			( isset($_GET['action']) && $_GET['action']=='logout') ||   // in case of LOGOUT
-    			( isset($_GET['checkemail']) && $_GET['checkemail']=='confirm') ||   // in case of LOST PASSWORD
-    			( isset($_GET['checkemail']) && $_GET['checkemail']=='registered') ) return;    // in case of REGISTER
-  				else {
-  					$member_login_url = membersignup_Options_Getter::get_member_login_page_url();
-  					wp_redirect( $member_login_url );
-  				}
-  				exit();
-  			}
-  		}
-  	}
-  }
+		// logged-in users go their usual way
+		if  ( is_user_logged_in() )
+			return;
+		// only attempt redirection if visiting the login page
+		if ( $GLOBALS[ 'pagenow'] != 'wp-login.php') 
+			return;
+		// Check for POST or GET requests to avoid blocking custom login functions
+		// original code by user Anatoly of StackOverflow
+		// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
+		if ( isset( $_POST['wp-submit'] ) ||   // in case of LOGIN
+      		( isset($_GET['action']) && $_GET['action']=='logout') ||   // in case of LOGOUT
+      		( isset($_GET['checkemail']) && $_GET['checkemail']=='confirm') ||   // in case of LOST PASSWORD
+      		( isset($_GET['checkemail']) && $_GET['checkemail']=='registered') ) {
+			return;
+		}
+		// get the plugin set options
+		$membersignup_options = get_option( 'membersignup_options', array() );
+		// is the custom login page has been set use it else default it to the default login page
+		$custom_login_page_url = get_site_url( null, '/wp-login.php' );
+		if ( isset( $membersignup_options['custom_member_login_page_url'] )) {
+			$custom_login_page_url = $membersignup_options['custom_member_login_page_url']; 
+		} 
+		wp_redirect( $custom_login_page_url );
+		exit();
+	}
+}
+?>
