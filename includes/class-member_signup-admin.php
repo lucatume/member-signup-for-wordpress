@@ -218,7 +218,7 @@ class membersignup_Admin {
 	public function register_settings(){
 		register_setting( 'membersignup_options', 'membersignup_options', array($this, 'validate_options'));
 		add_settings_section( 'main_settings', __( 'Login page settings', 'membersignup' ), 'the_main_section_description', 'membersignup' );
-		add_settings_field( 'custom_member_login_page', __( 'Custom login page', 'membersignup' ), array($this, 'the_custom_login_page_select'), 'membersignup', 'main_settings' );
+		add_settings_field( 'custom_member_login_page_url', __( 'Custom login page', 'membersignup' ), array($this, 'the_custom_login_page_select'), 'membersignup', 'main_settings' );
 	}
 
 	/**
@@ -238,12 +238,12 @@ class membersignup_Admin {
 		// get a list of pages
 		$pages = get_pages( array() );
 		echo '<label for="plugin_text_string">' . __( 'Select the page to redirect logins to', 'membersignup' ) . '</label>';
-		echo "<select id='plugin_text_string' name='membersignup_options[custom_member_login_page]' value='{$options['custom_member_login_page']}'>";
+		echo "<select id='plugin_text_string' name='membersignup_options[custom_member_login_page_url]' value='{$options['custom_member_login_page_url']}'>";
 		if ($pages) {
 			foreach ($pages as $page) {
-				$slug = $page->post_name;
+				$guid = $page->guid; // the page URL
 				$title = $page->post_title;
-				echo "<option value={$slug}" . selected( $slug, $current = $options['custom_member_login_page'] )  . ">{$title}</option>";
+				echo "<option value={$guid}" . selected( $guid, $current = $options['custom_member_login_page_url'] )  . ">{$title}</option>";
 			}
 		}
 		echo '</select>';
