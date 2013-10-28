@@ -49,14 +49,6 @@ class membersignup_Admin {
 	 */
 	private function __construct() {
 
-		/*
-		 * Call $plugin_slug from public plugin class.
-		 *
-		 * TODO:
-		 *
-		 * - Rename "membersignup" to the name of your initial plugin class
-		 *
-		 */
 		$plugin = membersignup::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
 
