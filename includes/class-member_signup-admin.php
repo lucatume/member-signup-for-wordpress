@@ -42,6 +42,12 @@ class membersignup_Admin {
 	protected $plugin_screen_hook_suffix = null;
 
 	/**
+	 * Instance of the Action and Filter Adder adapter class
+	 * @var object
+	 */
+	protected $filters = null;
+
+	/**
 	 * Initialize the plugin by loading admin scripts & styles and adding a
 	 * settings page and menu.
 	 *
@@ -49,30 +55,32 @@ class membersignup_Admin {
 	 */
 	private function __construct() {
 
+		// Require the adapter classes
+		require_once 'class-adapter-filters.php';
+
+		// Instance adapter classes
+		$this->filters = membersignup_Filters::get_instance();
+
 		$plugin = membersignup::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
 
 		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		$this->filters->add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
+		$this->filters->add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
+		$this->filters->add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
 
-		/*
-		 * Add an action link pointing to the options page.
-		 *
-		 * TODO:
-		 *
-		 * - Rename "membersignup.php" to the name your plugin
+		/**
+		 * Add a link to the settings page for the plugin
 		 */
 		$plugin_basename = plugin_basename( plugin_dir_path( __FILE__ ) . 'membersignup.php' );
-		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
+		$this->filters->add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
 		/**
 		 * Add the plugin settings to the previously registered page
 		 */
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		$this->filters->add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 	}
 
