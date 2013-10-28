@@ -238,6 +238,9 @@ class membersignup_Admin {
 				echo "<option value={$guid}" . selected( $guid, $current = $options['custom_member_login_page_url'] )  . ">{$title}</option>";
 			}
 		}
+		// Add the default login page URL
+		$default_login_page_url = 'default';
+		echo "<option value={$default_login_page_url}" . selected( $default_login_page_url, $current = $options['custom_member_login_page_url'] )  . ">" . esc_html__( 'Default login page (do not redirect)',  'default' ) . "</option>";
 		echo '</select>';
 	}
 
