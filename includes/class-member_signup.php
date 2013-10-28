@@ -323,6 +323,17 @@ class membersignup {
 		// only attempt redirection if visiting the login page
 		if ( $GLOBALS[ 'pagenow'] != 'wp-login.php') 
 			return;
+		// get the plugin set options or an empty array as a default
+		$membersignup_options = get_option( 'membersignup_options', array() );
+		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
+		$custom_login_page_url = 'default';
+		if ( isset( $membersignup_options['custom_member_login_page_url'] )) {
+			$custom_login_page_url = $membersignup_options['custom_member_login_page_url']; 
+		} 
+		// do not attempt redirection if the redirect points to the default login page
+		if ( $custom_login_page_url == 'default' ) {
+			return;
+		}
 		// Check for POST or GET requests to avoid blocking custom login functions
 		// original code by user Anatoly of StackOverflow
 		// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
@@ -332,13 +343,6 @@ class membersignup {
       		( isset($_GET['checkemail']) && $_GET['checkemail']=='registered') ) {
 			return;
 		}
-		// get the plugin set options
-		$membersignup_options = get_option( 'membersignup_options', array() );
-		// is the custom login page has been set use it else default it to the default login page
-		$custom_login_page_url = get_site_url( null, '/wp-login.php' );
-		if ( isset( $membersignup_options['custom_member_login_page_url'] )) {
-			$custom_login_page_url = $membersignup_options['custom_member_login_page_url']; 
-		} 
 		wp_redirect( $custom_login_page_url );
 		exit();
 	}
