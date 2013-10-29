@@ -81,7 +81,7 @@ class membersignup_Admin {
 		 * on Adapter Classes plugin
 		 */
 		if ( ! function_exists( 'adclasses_include_adapter_classes' )) {
-			require_once __DIR__ . '/../../adapter-classes/adapter_classes.php';
+			require_once __DIR__ . '/../../adapter-classes-for-wordpress/adapter_classes.php';
 		}
 
 		// Instance adapter classes
