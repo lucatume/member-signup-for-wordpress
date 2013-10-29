@@ -68,20 +68,6 @@ class membersignup {
 
 		// Activate plugin when new blog is added
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
-
-		// Load public-facing style sheet and JavaScript.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		/**
-		 * Add a shortcode to output the member login form in the page
-		 */
-		add_shortcode( 'membersignup', array( $this, 'display_login_form') );
-
-		/**
-		 * Add an action to redirect users to the member login page
-		 */
-		add_action( 'wp_loaded', array( $this, 'redirect_to_member_login' ) );
 	}
 
 	/**
@@ -261,90 +247,6 @@ class membersignup {
 		load_textdomain( $domain, trailingslashit( WP_LANG_DIR ) . $domain . '/' . $domain . '-' . $locale . '.mo' );
 		load_plugin_textdomain( $domain, FALSE, basename( dirname( __FILE__ ) ) . '/languages' );
 
-	}
-
-	/**
-	 * Register and enqueue public-facing style sheet.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		//do not load minified style during debug
-		$debug_postfix = '';
-		if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
-			$debug_postfix = '.min';	
-		}
-		else{
-			$debug_postfix = '';
-		}
-
-		wp_enqueue_style( $this->plugin_slug . '-plugin-styles', plugins_url( "assets/css/public{$debug_postfix}.css", __FILE__ ), array(), self::VERSION );
-	}
-
-	/**
-	 * Register and enqueues public-facing JavaScript files.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-
-
-		//do not load minified script during debug
-		$debug_postfix = '';
-		if ( ! defined(WP_DEBUG) || false == WP_DEBUG ) {
-			$debug_postfix = '.min';	
-		}
-		else{
-			$debug_postfix = '';
-		}
-
-		wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( "assets/js/public{$debug_postfix}.js", __FILE__ ), array( 'jquery' ), self::VERSION );
-	}
-
-	/**
-	 * Returns the custom member login form markup
-	 * @param  array $atts    The shortcode attributes
-	 * @param  string $content The content enclosed by the shortcode
-	 * @return string          The markup to display in the page
-	 */
-	public function display_login_form( $atts, $content='' ){
-		return '<form id="member_login_form">Member login form</form>';
-	}
-
-	/**
-	 * Redirects not logged-in visitors to a custom login page
-	 * @return none
-	 */
-	public function redirect_to_member_login(){
-		// logged-in users go their usual way
-		if  ( is_user_logged_in() )
-			return;
-		// only attempt redirection if visiting the login page
-		if ( $GLOBALS[ 'pagenow'] != 'wp-login.php') 
-			return;
-		// get the plugin set options or an empty array as a default
-		$membersignup_options = get_option( 'membersignup_options', array() );
-		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
-		$custom_login_page_url = 'default';
-		if ( isset( $membersignup_options['custom_member_login_page_url'] )) {
-			$custom_login_page_url = $membersignup_options['custom_member_login_page_url']; 
-		} 
-		// do not attempt redirection if the redirect points to the default login page
-		if ( $custom_login_page_url == 'default' ) {
-			return;
-		}
-		// Check for POST or GET requests to avoid blocking custom login functions
-		// original code by user Anatoly of StackOverflow
-		// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
-		if ( isset( $_POST['wp-submit'] ) ||   // in case of LOGIN
-      		( isset($_GET['action']) && $_GET['action']=='logout') ||   // in case of LOGOUT
-      		( isset($_GET['checkemail']) && $_GET['checkemail']=='confirm') ||   // in case of LOST PASSWORD
-      		( isset($_GET['checkemail']) && $_GET['checkemail']=='registered') ) {
-			return;
-		}
-		wp_redirect( $custom_login_page_url );
-		exit();
 	}
 }
 ?>
