@@ -30,7 +30,7 @@ class membersignup_Redirect_Controller {
 
 		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance ) {
-			self::$instance = new self;
+			self::$instance = new self();
 		}
 
 		return self::$instance;
@@ -38,7 +38,6 @@ class membersignup_Redirect_Controller {
 
 	private function __construct(){
 
-		// Get hold of neeed adapter classes instances
 		$this->filters = adclasses_Filters::get_instance();
 		$this->options = adclasses_Options::get_instance();
 		$this->functions = adclasses_Functions::get_instance();
