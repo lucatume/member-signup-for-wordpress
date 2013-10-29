@@ -45,7 +45,25 @@ class membersignup_Admin {
 	 * Instance of the Action and Filter Adder adapter class
 	 * @var object
 	 */
+	
 	protected $filters = null;
+	/**
+	 * Instance of the Scripts adapter class
+	 * @var object
+	 */
+	protected $scripts= null;
+
+	/**
+	 * Instance of the Styles adapter class
+	 * @var object
+	 */
+	protected $styles = null;
+
+	/**
+	 * Instance of the Settings adapter class
+	 * @var object
+	 */
+	protected $settings = null;
 
 	/**
 	 * Initialize the plugin by loading admin scripts & styles and adding a
@@ -54,12 +72,23 @@ class membersignup_Admin {
 	 * @since     1.0.0
 	 */
 	private function __construct() {
-
-		// Require the adapter classes
-		require_once 'class-adapter-filters.php';
+		/**
+		 * Require the adapter classes used in the plugin.
+		 * When in normal WordPress environment adapter classes should be loaded already
+		 * but if the file is used in unit-testing then adapter classes are searched in the 
+		 * adapter-classes plugin folder
+		 * see 	https://github.com/lucatume/adapter-classes-for-wordpress for more info
+		 * on Adapter Classes plugin
+		 */
+		if ( ! function_exists( 'adclasses_include_adapter_classes' )) {
+			require_once __DIR__ . '/../../adapter-classes/adapter_classes.php';
+		}
 
 		// Instance adapter classes
-		$this->filters = membersignup_Filters::get_instance();
+		$this->filters = adclasses_Filters::get_instance();
+		$this->scripts = adclasses_Scripts::get_instance();
+		$this->styles = adclasses_Styles::get_instance();
+		$this->settings = adclasses_Settings::get_instance();
 
 		$plugin = membersignup::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
@@ -127,7 +156,7 @@ class membersignup_Admin {
 				$debug_postfix = '';
 			}
 
-			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( "assets/css/admin{$debug_postfix}.css", __FILE__ ), array(), membersignup::VERSION );
+			$this->styles->enqueue( $this->plugin_slug .'-admin-styles', plugins_url( "assets/css/admin{$debug_postfix}.css", __FILE__ ), array(), membersignup::VERSION );
 		}
 
 	}
@@ -157,7 +186,7 @@ class membersignup_Admin {
 				$debug_postfix = '';
 			}
 
-			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( "assets/js/admin{$debug_postfix}.js", __FILE__ ), array( 'jquery' ), membersignup::VERSION );
+			$this->scripts->enqueue( $this->plugin_slug . '-admin-script', plugins_url( "assets/js/admin{$debug_postfix}.js", __FILE__ ), array( 'jquery' ), membersignup::VERSION );
 		}
 
 	}
@@ -176,7 +205,7 @@ class membersignup_Admin {
 		 *
 		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 		 */
-		$this->plugin_screen_hook_suffix = add_options_page(
+		$this->plugin_screen_hook_suffix = $this->settings->add_option_page(
 			__( 'Member Signup settings', 'membersignup' ),
 			__( 'Member Signup', 'membersignup' ),
 			'manage_options',
