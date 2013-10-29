@@ -35,17 +35,12 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'MEMBERSIGNUP_PLUGIN_DIRPATH', plugin_dir_path( __FILE__ ) );
 define( 'MEMBERSIGNUP_PLUGIN_DIRNAME', dirname(__FILE__) );
 
-/*
- * Require main front-end and back-end class files
- */
-require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-member_signup.php' );
-require_once( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-member_signup-admin.php' );
-
 /**
- * Require more adapter classes used by both front-end and back-end classes
+ * Require all the classes of the plugin
  */
-require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-user_role_checker.php' );
-require_once ( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-options_getter.php' );
+foreach ( glob( MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/class-*.php') as $filename ) {
+	require_once $filename;
+}
 
 /*
  * Register hooks that are fired when the plugin is activated or deactivated.
@@ -57,5 +52,9 @@ register_deactivation_hook( __FILE__, array( 'membersignup', 'deactivate' ) );
 /*
  * At init load our main plugin classes
  */
-add_action( 'init', array( 'membersignup', 'get_instance' ) );
-add_action( 'init', array( 'membersignup_Admin', 'get_instance' ) );
+add_action( 'init', array( 'membersignup', 'get_instance' ) ); // Since this is the class containing many versiona and slug inits it should always be the first one to be initialized
+add_action( 'init', array( 'membersignup_Admin_Scripts_Styles', 'get_instance' ) );
+add_action( 'init', array( 'membersignup_Scripts_Styles', 'get_instance') );
+add_action( 'init', array( 'membersignup_Settings_Controller', 'get_instance') );
+add_action( 'init', array( 'membersignup_Redirect_Controller', 'get_instance') );
+add_action( 'init', array( 'membersignup_Shortcode_controller', 'get_instance') );
