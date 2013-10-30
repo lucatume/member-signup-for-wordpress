@@ -33,12 +33,20 @@ class membersignup_Redirect_Controller
 		
 		return self::$instance;
 	}
+	/**
+	 * Unsets the static instance
+	 * @return none
+	 */
 	public static function unset_instance()
 	{
 		if (isset(self::$instance)) {
 			self::$instance = null;
 		}
 	}
+	/**
+	 * Instantiates the class object
+	 * @param array $adapters An array of adapter objects to be used in place of the ones the constructor would fetch on itself
+	 */
 	private function __construct($adapters = null)
 	{
 		// if no adapters are passed
@@ -90,14 +98,14 @@ class membersignup_Redirect_Controller
 		// Check for POST or GET requests to avoid blocking custom login functions
 		// original code by user Anatoly of StackOverflow
 		// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
-		if (isset($_POST['wp-submit']) || // in case of LOGIN
-		(isset($_GET['action']) && $_GET['action'] == 'logout') || // in case of LOGOUT
-		(isset($_GET['checkemail']) && $_GET['checkemail'] == 'confirm') || // in case of LOST PASSWORD
-		(isset($_GET['checkemail']) && $_GET['checkemail'] == 'registered')) {
+		if (null !== $this->globals->post('wp_submit') || // in case of LOGIN
+		(null !== $this->globals->get('action') && $this->globals->get('action') == 'logout') || // in case of LOGOUT
+		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'confirm') || // in case of LOST PASSWORD
+		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'registered')) {
 			
 			return;
 		}
-		wp_redirect($custom_login_page_url);
+		$this->functions->wp_redirect($custom_login_page_url);
 		exit();
 	}
 }
