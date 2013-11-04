@@ -9,4 +9,7 @@ foreach (glob(__DIR__ . '/../includes/class-*.php') as $file) {
 foreach (glob(__DIR__ . '/../../adapter-classes-for-wordpress/includes/class-*.php') as $filename) {
 	require_once $filename;
 }
+
+// Include the adapter classes test case
+require_once __DIR__ . '/../../adapter-classes-for-wordpress/tests/class-adapter_classes_testcase.php';
 ?>
