@@ -82,7 +82,7 @@ class membersignup_Redirect_Controller
 		return;
 		// only attempt redirection if visiting the login page
 		$pagenow = $this->globals->pagenow();
-		if (null !== $pagenow && $pagenow == 'wp-login.php') {
+		if (null !== $pagenow && $pagenow != 'wp-login.php') {
 			
 			return;
 		}
@@ -94,7 +94,7 @@ class membersignup_Redirect_Controller
 		}
 		if ($this->should_redirect()) {
 			$this->functions->wp_redirect($custom_login_page_url);
-			exit();
+			// exit();
 		}
 	}
 	/**
