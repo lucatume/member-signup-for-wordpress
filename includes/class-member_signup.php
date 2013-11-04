@@ -132,16 +132,16 @@ class membersignup
 	 */
 	public static function activate($network_wide)
 	{
-		if (function_exists('is_multisite') && $this->functions->is_multisite()) {
+		if (function_exists('is_multisite') && is_multisite()) {
 			if ($network_wide) {
 				// Get all blog ids
 				$blog_ids = self::get_blog_ids();
 				
 				foreach ($blog_ids as $blog_id) {
-					$this->functions->switch_to_blog($blog_id);
+					switch_to_blog($blog_id);
 					self::single_activate();
 				}
-				$this->functions->restore_current_blog();
+				restore_current_blog();
 			}
 			else {
 				self::single_activate();
@@ -163,13 +163,13 @@ class membersignup
 	 */
 	public static function deactivate($network_wide)
 	{
-		if (function_exists('is_multisite') && $this->functions->is_multisite()) {
+		if (function_exists('is_multisite') && is_multisite()) {
 			if ($network_wide) {
 				// Get all blog ids
 				$blog_ids = self::get_blog_ids();
 				
 				foreach ($blog_ids as $blog_id) {
-					$this->functions->switch_to_blog($blog_id);
+					switch_to_blog($blog_id);
 					self::single_deactivate();
 				}
 				$hthis->fucntions->restore_current_blog();
@@ -226,7 +226,7 @@ class membersignup
 	private static function single_activate()
 	{
 		//  add the "member" role
-		$this->functions->add_role('member', esc_html__('Member', $domain = $plugin_slug) , $capabilities = array());
+		add_role('member', esc_html__('Member', $domain = $plugin_slug) , $capabilities = array());
 	}
 	/**
 	 * Fired for each blog when the plugin is deactivated.
