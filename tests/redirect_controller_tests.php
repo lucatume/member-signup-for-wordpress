@@ -51,30 +51,57 @@ class redirectControllerTest extends Adapter_Classes_TestCase
 		// run the method
 		$i->redirect_to_member_login();
 	}
-	public function test_redirect_uses_set_custom_login_page_url()
+	public function test_get_custom_login_page_url_returns_empty_string_if_no_options_set()
 	{
-		// get the mocks used by the function;
 		$mocks = $this->get_mock_adapters($this->all_adapters);
-		// is_user_logged_in returns true
-		$mocks['functions']->expects($this->once())->method('is_user_logged_in')->will($this->returnValue(false));
-		// pagenow is not 'wp_login.php'
-		$mocks['globals']->expects($this->once())->method('pagenow')->will($this->returnValue('foo'));
-		// custom login page is not ''
-		$options = array(
-			'custom_member_login_page_url' => 'foo'
-		);
-		$mocks['options']->expects($this->once())->method('get_option')->with($this->equalTo('membersignup_options') , $this->equalTo(false))->will($this->returnCallback(function ($options)
-		{
-			
-			return $options;
-		}));
-		$mocks['options']->expects($this->once())->method('get_option')->with($this->equalTo('membersignup_options') , $this->equalTo(false))->will($this->returnCallback($options));
-		// expect wp_redirect to be called with custom login url
-		$mocks['functions']->expects($this->once())->method('wp_redirect')->with($this->equalTo('foo'))->will($this->returnVale]ue());
-		// get the instance
+		$mocks['options']->expects($this->any())->method('get_option')->with($this->equalTo('membersignup_options'))->will($this->returnValue(null));
 		$i = membersignup_Redirect_Controller::get_instance($mocks);
-		// call function
+		// run the method
+		$cu = $i->get_custom_login_page_url();
+		$this->assertEquals('', $cu);
+	}
+	public function test_get_custom_login_page_url_returns_empty_string_if_no_custom_login_page_url_set()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['options']->expects($this->any())->method('get_option')->with($this->equalTo('membersignup_options'))->will($this->returnValue(array(
+			'foo' => 'baz'
+		)));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		// run the method
+		$cu = $i->get_custom_login_page_url();
+		$this->assertEquals('', $cu);
+	}
+	public function test_get_custom_login_page_url_returns_set_custom_login_page_url()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['options']->expects($this->any())->method('get_option')->with($this->equalTo('membersignup_options'))->will($this->returnValue(array(
+			'custom_member_login_page_url' => 'baz'
+		)));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		// run the method
+		$cu = $i->get_custom_login_page_url();
+		$this->assertEquals('baz', $cu);
+	}
+	public function test_redirects_to_set_custom_login_page_url()
+	{
+		// get the mock adapters
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		// set 'is_user_logged_in' to return false
+		$mocks['functions']->expects($this->once())->method('is_user_logged_in')->will($this->returnValue(false));
+		// pagenow is not 'wp-login.php'
+		$mocks['globals']->expects($this->once())->method('pagenow')->will($this->returnValue('foo'));
+		// options are set to something
+		$mocks['options']->expects($this->once())->method('get_option')->will($this->returnValue(array('custom_member_login_page_url'=>'something')));
+		// expect wp_redirect call
+		$mocks['functions']->expects($this->once())->method('wp_redirect' )->with($this->equalTo('something'));
+		// get a class instance
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		// since the method exits overload the exit
+		// set_exit_overload();
+		// call redirect
 		$i->redirect_to_member_login();
+		// unset the exit overload
+		// unset_exit_overload();
 	}
 	public function test_should_redirect_returns_true_for_all_null()
 	{
@@ -86,44 +113,67 @@ class redirectControllerTest extends Adapter_Classes_TestCase
 		$r = $i->should_redirect();
 		$this->assertTrue($r);
 	}
-	public function test_should_redirect_returns_false_when_wp_submit_not_null()
+	public function test_should_not_redirect_for_wp_submit_not_null()
 	{
-		// get the globals
 		$mocks = $this->get_mock_adapters($this->all_adapters);
-		$mocks['globals']->expects($this->once())->method('post')->with($this->equalTo('wp_submit'))->will($this->returnValue('not_null'));
+		$mocks['globals']->expects($this->once())->method('get_post_var')->with($this->equalTo('wp_submit'))->will($this->returnValue('not_null'));
 		// get the instance
 		$i = membersignup_Redirect_Controller::get_instance($mocks);
 		// call function
 		$r = $i->should_redirect();
 		$this->assertFalse($r);
 	}
-	public function test_should_redirect_returns_true_when_get_not_null_but_not_valid()
+	public function test_should_redirect_for_non_null_but_not_logout_action()
 	{
-		// get the globals
 		$mocks = $this->get_mock_adapters($this->all_adapters);
-		$mocks['globals']->expects($this->at(0))->method('get')->with($this->equalTo('action'))->will($this->returnValue('not_valid'));
-		$mocks['globals']->expects($this->at(1))->method('get')->with($this->equalTo('action'))->will($this->returnValue('not_valid'));
-		// get the instance
+		$mocks['globals']->expects($this->at(1))->method('get_get_var')->with($this->equalTo('action'))->will($this->returnValue('not_logout'));
 		$i = membersignup_Redirect_Controller::get_instance($mocks);
-		// call function
 		$r = $i->should_redirect();
 		$this->assertTrue($r);
 	}
-	// public function test_should_redirect_returns_false_when_get_not_null_and_valid()
-	// {
-	// 	// get the globals
-	// 	$mocks = $this->get_mock_adapters($this->all_adapters);
-	// 	$mocks['globals']->expects($this->at(0))->method('get')->with($this->equalTo('action'))->will($this->returnValue('logout'));
-	// 	$mocks['globals']->expects($this->at(1))->method('get')->with($this->equalTo('action'))->will($this->returnValue('logout'));
-	// 	// get the instance
-	// 	$i = membersignup_Redirect_Controller::get_instance($mocks);
-	// 	// call function
-	// 	$r = $i->should_redirect();
-	// 	$this->assertFalse($r);
-	// }
+	public function test_should_not_redirect_for_non_null_and_logout_action()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['globals']->expects($this->at(1))->method('get_get_var')->with($this->equalTo('action'))->will($this->returnValue('logout'));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		$r = $i->should_redirect();
+		$this->assertFalse($r);
+	}
+	public function test_should_redirect_for_non_null_but_not_checkemail_confirm_action()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['globals']->expects($this->at(2))->method('get_get_var')->with($this->equalTo('checkemail'))->will($this->returnValue('not_confirm'));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		$r = $i->should_redirect();
+		$this->assertTrue($r);
+	}
+	public function test_should_not_redirect_for_non_null_and_checkemail_confirm_action()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['globals']->expects($this->at(2))->method('get_get_var')->with($this->equalTo('checkemail'))->will($this->returnValue('confirm'));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		$r = $i->should_redirect();
+		$this->assertFalse($r);
+	}
+	public function test_should_redirect_for_non_null_but_not_checkemail_registered_action()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['globals']->expects($this->at(2))->method('get_get_var')->with($this->equalTo('checkemail'))->will($this->returnValue('not_registered'));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		$r = $i->should_redirect();
+		$this->assertTrue($r);
+	}
+	public function test_should_not_redirect_for_non_null_and_checkemail_registered_action()
+	{
+		$mocks = $this->get_mock_adapters($this->all_adapters);
+		$mocks['globals']->expects($this->at(2))->method('get_get_var')->with($this->equalTo('checkemail'))->will($this->returnValue('registered'));
+		$i = membersignup_Redirect_Controller::get_instance($mocks);
+		$r = $i->should_redirect();
+		$this->assertFalse($r);
+	}
 	public function tearDown()
 	{
 		membersignup_Redirect_Controller::unset_instance();
 	}
 }
-?>
+?>s

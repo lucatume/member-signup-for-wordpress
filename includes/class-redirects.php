@@ -81,7 +81,8 @@ class membersignup_Redirect_Controller
 		if ($this->functions->is_user_logged_in()) 
 		return;
 		// only attempt redirection if visiting the login page
-		if ($this->globals->pagenow() == 'wp-login.php') {
+		$pagenow = $this->globals->pagenow();
+		if (null !== $pagenow && $pagenow == 'wp-login.php') {
 			
 			return;
 		}
@@ -104,10 +105,24 @@ class membersignup_Redirect_Controller
 	 */
 	public function should_redirect()
 	{
-		if (null !== $this->globals->post('wp_submit') || // in case of LOGIN
-		(null !== $this->globals->get('action') && $this->globals->get('action') == 'logout') || // in case of LOGOUT
-		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'confirm') || // in case of LOST PASSWORD
-		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'registered')) {
+		// in case of LOGIN
+		if (null !== $this->globals->get_post_var('wp_submit')) {
+			
+			return false;
+		}
+		// in case of LOGOUT
+		$action = $this->globals->get_get_var('action');
+		if (null !== $action && $action == 'logout') {
+			
+			return false;
+		}
+		// in case of LOST PASSWORD
+		$checkemail = $this->globals->get_get_var('checkemail');
+		if (null !== $checkemail && $checkemail == 'confirm') {
+			
+			return false;
+		}
+		if ($checkemail == 'registered') {
 			
 			return false;
 		}
@@ -122,9 +137,9 @@ class membersignup_Redirect_Controller
 	{
 		// get the plugin set options or an empty array as a default
 		$membersignup_options = $this->options->get_option('membersignup_options');
-		if (!isset($membersignup_options)) {
+		if (!is_array($membersignup_options)) {
 			
-			return;
+			return '';
 		}
 		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
 		$custom_login_page_url = '';
