@@ -81,31 +81,57 @@ class membersignup_Redirect_Controller
 		if ($this->functions->is_user_logged_in()) 
 		return;
 		// only attempt redirection if visiting the login page
-		if ($this->globals->pagenow() != 'wp-login.php') 
-		return;
-		// get the plugin set options or an empty array as a default
-		$membersignup_options = $this->options->get_option('membersignup_options', array());
-		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
-		$custom_login_page_url = 'default';
-		if (isset($membersignup_options['custom_member_login_page_url'])) {
-			$custom_login_page_url = $membersignup_options['custom_member_login_page_url'];
-		}
-		// do not attempt redirection if the redirect points to the default login page
-		if ($custom_login_page_url == 'default') {
+		if ($this->globals->pagenow() == 'wp-login.php') {
 			
 			return;
 		}
-		// Check for POST or GET requests to avoid blocking custom login functions
-		// original code by user Anatoly of StackOverflow
-		// http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
+		// do not attempt redirection if the redirect points to the default login page
+		$custom_login_page_url = $this->get_custom_login_page_url();
+		if ($custom_login_page_url == '') {
+			
+			return;
+		}
+		if ($this->should_redirect()) {
+			$this->functions->wp_redirect($custom_login_page_url);
+			exit();
+		}
+	}
+	/**
+	 * Check for POST or GET requests to avoid blocking custom login functions
+	 * original code by user Anatoly of StackOverflow
+	 * http://stackoverflow.com/questions/1976781/redirecting-wordpresss-login-register-page-to-a-custom-login-registration-page
+	 * @return [type] [description]
+	 */
+	public function should_redirect()
+	{
 		if (null !== $this->globals->post('wp_submit') || // in case of LOGIN
 		(null !== $this->globals->get('action') && $this->globals->get('action') == 'logout') || // in case of LOGOUT
 		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'confirm') || // in case of LOST PASSWORD
 		(null !== $this->globals->get('checkemail') && $this->globals->get('checkemail') == 'registered')) {
 			
+			return false;
+		}
+		
+		return true;
+	}
+	/**
+	 * Gets the user-set custom login page URL or empty string if not set
+	 * @return string The user-set login page URL or an empty string
+	 */
+	public function get_custom_login_page_url()
+	{
+		// get the plugin set options or an empty array as a default
+		$membersignup_options = $this->options->get_option('membersignup_options');
+		if (!isset($membersignup_options)) {
+			
 			return;
 		}
-		$this->functions->wp_redirect($custom_login_page_url);
-		exit();
+		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
+		$custom_login_page_url = '';
+		if (isset($membersignup_options['custom_member_login_page_url'])) {
+			$custom_login_page_url = $membersignup_options['custom_member_login_page_url'];
+		}
+		
+		return $custom_login_page_url;
 	}
 }
