@@ -6,5 +6,9 @@
 		<testsuite name="All tests">
 			<directory suffix=".php">.</directory>
 		</testsuite>
+		<testsuite name="Shortcode">
+			<file>class-shortcode_controller_tests.php</file>
+			<file>class-shortcode_view_tests.php</file>
+		</testsuite>
 	</testsuites>
 </phpunit>
