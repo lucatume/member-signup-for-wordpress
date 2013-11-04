@@ -88,7 +88,7 @@ class membersignup_Redirect_Controller
 		}
 		// do not attempt redirection if the redirect points to the default login page
 		$custom_login_page_url = $this->get_custom_login_page_url();
-		if ($custom_login_page_url == '') {
+		if ($custom_login_page_url == 'default') {
 			
 			return;
 		}
@@ -139,10 +139,10 @@ class membersignup_Redirect_Controller
 		$membersignup_options = $this->options->get_option('membersignup_options');
 		if (!is_array($membersignup_options)) {
 			
-			return '';
+			return 'default';
 		}
 		// if the custom login page has been set use it else default it to the default login page with redirection to the admin url
-		$custom_login_page_url = '';
+		$custom_login_page_url = 'default';
 		if (isset($membersignup_options['custom_member_login_page_url'])) {
 			$custom_login_page_url = $membersignup_options['custom_member_login_page_url'];
 		}
