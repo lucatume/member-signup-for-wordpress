@@ -51,16 +51,16 @@ class redirectControllerTest extends Adapter_Classes_TestCase
 		// run the method
 		$i->redirect_to_member_login();
 	}
-	public function test_get_custom_login_page_url_returns_empty_string_if_no_options_set()
+	public function test_get_custom_login_page_url_returns_default_if_no_options_set()
 	{
 		$mocks = $this->get_mock_adapters($this->all_adapters);
 		$mocks['options']->expects($this->any())->method('get_option')->with($this->equalTo('membersignup_options'))->will($this->returnValue(null));
 		$i = membersignup_Redirect_Controller::get_instance($mocks);
 		// run the method
 		$cu = $i->get_custom_login_page_url();
-		$this->assertEquals('', $cu);
+		$this->assertEquals('default', $cu);
 	}
-	public function test_get_custom_login_page_url_returns_empty_string_if_no_custom_login_page_url_set()
+	public function test_get_custom_login_page_url_returns_default_if_no_custom_login_page_url_set()
 	{
 		$mocks = $this->get_mock_adapters($this->all_adapters);
 		$mocks['options']->expects($this->any())->method('get_option')->with($this->equalTo('membersignup_options'))->will($this->returnValue(array(
@@ -69,7 +69,7 @@ class redirectControllerTest extends Adapter_Classes_TestCase
 		$i = membersignup_Redirect_Controller::get_instance($mocks);
 		// run the method
 		$cu = $i->get_custom_login_page_url();
-		$this->assertEquals('', $cu);
+		$this->assertEquals('default', $cu);
 	}
 	public function test_get_custom_login_page_url_returns_set_custom_login_page_url()
 	{
