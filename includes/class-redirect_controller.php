@@ -66,7 +66,7 @@ class membersignup_Redirect_Controller
 		/**
 		 * Add an action to redirect users to the member login page
 		 */
-		$this->filters->add_action('wp_loaded', array(
+		$this->functions->add_action('wp_loaded', array(
 			$this,
 			'redirect_to_member_login'
 		));
@@ -94,7 +94,7 @@ class membersignup_Redirect_Controller
 		}
 		if ($this->should_redirect()) {
 			$this->functions->wp_redirect($custom_login_page_url);
-			// exit();
+			exit();
 		}
 	}
 	/**
@@ -136,7 +136,7 @@ class membersignup_Redirect_Controller
 	public function get_custom_login_page_url()
 	{
 		// get the plugin set options or an empty array as a default
-		$membersignup_options = $this->options->get_option('membersignup_options');
+		$membersignup_options = $this->functions->get_option('membersignup_options');
 		if (!is_array($membersignup_options)) {
 			
 			return 'default';

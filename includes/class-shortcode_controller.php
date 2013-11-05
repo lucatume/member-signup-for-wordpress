@@ -10,7 +10,7 @@
  * @link      http://theaveragedev.com
  * @copyright 2013 theAverageDev (Luca Tumedei)
  */
-class membersignup_Shortcode_Controller
+class membersignup_Shortcode_Controller implements adclasses_Singleton
 {
 	/**
 	 * The instance of this class
@@ -24,11 +24,11 @@ class membersignup_Shortcode_Controller
 	 *
 	 * @return    object    A single instance of this class.
 	 */
-	public static function get_instance($adapters = null, $view = null)
+	public static function get_instance($mocks = null)
 	{
 		// If the single instance hasn't been set, set it now.
 		if (null == self::$instance) {
-			self::$instance = new self($adapters, $view);
+			self::$instance = new self($mocks);
 		}
 		
 		return self::$instance;
@@ -43,27 +43,32 @@ class membersignup_Shortcode_Controller
 			self::$instance = null;
 		}
 	}
-	private function __construct($adapters = null, $view = null)
+	private function __construct($mocks = null)
 	{
-		// if no adapters are passed
-		if (!is_array($adapters)) {
-			// call factory by itself
-			$adapters = adclasses_Factory::get_instance()->get_adapters(array(
-				'filters'
+		if (is_array($mocks) && in_array('view', array_keys($mocks))) {
+			$this->view = $mocks['view'];
+			unset($mocks['view']);
+		}
+		// if no mocks are passed
+		if (!is_array($mocks)) {
+			// call factory by itself to get adapters
+			$mocks = adclasses_Factory::get_instance()->get_adapters(array(
+				'functions',
+				'globals'
 			));
 		}
 		
-		foreach ($adapters as $slug => $value) {
+		foreach ($mocks as $slug => $value) {
 			$this->{$slug} = $value;
 		}
-		if (null == $view) {
+		if (null == $this->view) {
 			$view = new membersignup_Shortcode_View();
 		}
 		$this->view = $view;
 		/**
 		 * Add a shortcode to output the member login form in the page
 		 */
-		$this->filters->add_shortcode('membersignup_login_form', array(
+		$this->functions->add_shortcode('membersignup_login_form', array(
 			$this,
 			'display_login_form'
 		));
@@ -76,7 +81,6 @@ class membersignup_Shortcode_Controller
 	 */
 	public function display_login_form($atts, $content = '')
 	{
-			echo $this->view->get_view();
-		
+		echo $this->view->get_view();
 	}
 }

@@ -62,11 +62,11 @@ class membersignup_Admin_Scripts_Styles
 		$plugin = membersignup::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
 		// Load admin style sheet and JavaScript.
-		$this->filters->add_action('admin_enqueue_scripts', array(
+		$this->functions->add_action('admin_enqueue_scripts', array(
 			$this,
 			'enqueue_admin_styles'
 		));
-		$this->filters->add_action('admin_enqueue_scripts', array(
+		$this->functions->add_action('admin_enqueue_scripts', array(
 			$this,
 			'enqueue_admin_scripts'
 		));
@@ -150,7 +150,7 @@ class membersignup_Admin_Scripts_Styles
 			else {
 				$debug_postfix = '';
 			}
-			$this->scripts->wp_enqueue_script($this->plugin_slug . '-admin-script', plugins_url("assets/js/admin{$debug_postfix}.js", __FILE__) , array(
+			$this->functions->wp_enqueue_script($this->plugin_slug . '-admin-script', plugins_url("assets/js/admin{$debug_postfix}.js", __FILE__) , array(
 				'jquery'
 			) , membersignup::VERSION);
 		}

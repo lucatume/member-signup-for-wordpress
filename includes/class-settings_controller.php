@@ -61,7 +61,7 @@ class membersignup_Settings_Controller
 			$this->{$slug} = $value;
 		}
 		// Add the options page and menu item.
-		$this->filters->add_action('admin_menu', array(
+		$this->functions ->add_action('admin_menu', array(
 			$this,
 			'add_plugin_admin_menu'
 		));
@@ -69,14 +69,14 @@ class membersignup_Settings_Controller
 		 * Add a link to the settings page for the plugin
 		 */
 		$plugin_basename = $this->functions->plugin_basename(MEMBERSIGNUP_PLUGIN_DIRPATH . 'member_signup.php');
-		$this->filters->add_filter('plugin_action_links_' . $plugin_basename, array(
+		$this->functions ->add_filter('plugin_action_links_' . $plugin_basename, array(
 			$this,
 			'add_action_links'
 		));
 		/**
 		 * Add the plugin settings to the previously registered page
 		 */
-		$this->filters->add_action('admin_init', array(
+		$this->functions ->add_action('admin_init', array(
 			$this,
 			'register_settings'
 		));
@@ -95,7 +95,7 @@ class membersignup_Settings_Controller
 		 *
 		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 		*/
-		$this->plugin_screen_hook_suffix = $this->settings->add_option_page(__('Member Signup settings', 'membersignup') , __('Member Signup', 'membersignup') , 'manage_options', $this->plugin_slug, array(
+		$this->plugin_screen_hook_suffix = $this->functions->add_option_page(__('Member Signup settings', 'membersignup') , __('Member Signup', 'membersignup') , 'manage_options', $this->plugin_slug, array(
 			$this,
 			'display_plugin_admin_page'
 		));
@@ -127,15 +127,15 @@ class membersignup_Settings_Controller
 	 */
 	public function register_settings()
 	{
-		$this->settings->register_setting('membersignup_options', 'membersignup_options', array(
+		$this->functions->register_setting('membersignup_options', 'membersignup_options', array(
 			$this,
 			'validate_options'
 		));
-		$this->settings->add_settings_section('main_settings', __('Login page settings', 'membersignup') , array(
+		$this->functions->add_settings_section('main_settings', __('Login page settings', 'membersignup') , array(
 			$this,
 			'the_main_section_description'
 		) , 'membersignup');
-		$this->settings->add_settings_field('custom_member_login_page_url', __('Custom login page', 'membersignup') , array(
+		$this->functions->add_settings_field('custom_member_login_page_url', __('Custom login page', 'membersignup') , array(
 			$this,
 			'the_custom_login_page_select'
 		) , 'membersignup', 'main_settings');
@@ -154,9 +154,9 @@ class membersignup_Settings_Controller
 	 */
 	public function the_custom_login_page_select()
 	{
-		$options = $this->options->get_option('membersignup_options');
+		$options = $this->functions->get_option('membersignup_options');
 		// get a list of pages
-		$pages = $this->pages->get_pages(array());
+		$pages = $this->functions->get_pages(array());
 		echo '<label for="plugin_text_string">' . __('Select the page to redirect logins to', 'membersignup') . '</label>';
 		echo "<select id='plugin_text_string' name='membersignup_options[custom_member_login_page_url]' value='{$options['custom_member_login_page_url']}'>";
 		if ($pages) {

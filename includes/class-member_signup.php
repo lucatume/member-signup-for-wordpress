@@ -72,12 +72,12 @@ class membersignup
 			$this->{$slug} = $value;
 		}
 		// Load plugin text domain
-		$this->filters->add_action('init', array(
+		$this->functions->add_action('init', array(
 			$this,
 			'load_plugin_textdomain'
 		));
 		// Activate plugin when new blog is added
-		$this->filters->add_action('wpmu_new_blog', array(
+		$this->functions->add_action('wpmu_new_blog', array(
 			$this,
 			'activate_new_site'
 		));
@@ -226,7 +226,7 @@ class membersignup
 	private static function single_activate()
 	{
 		//  add the "member" role
-		add_role('member', esc_html__('Member', $domain = $plugin_slug) , $capabilities = array());
+		add_role('member', esc_html__('Member', $domain = $plugin_slug) , array('read'=>true));
 	}
 	/**
 	 * Fired for each blog when the plugin is deactivated.
@@ -246,7 +246,7 @@ class membersignup
 	public function load_plugin_textdomain()
 	{
 		$domain = $this->plugin_slug;
-		$locale = $this->filters->apply_filters('plugin_locale', $this->functions->get_locale() , $domain);
+		$locale = $this->functions->apply_filters('plugin_locale', $this->functions->get_locale() , $domain);
 		$this->functions->load_textdomain($domain, $this->functions->trailingslashit(WP_LANG_DIR) . $domain . '/' . $domain . '-' . $locale . '.mo');
 		$this->functions->load_plugin_textdomain($domain, false, basename(dirname(__FILE__)) . '/languages');
 	}

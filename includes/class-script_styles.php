@@ -50,11 +50,11 @@ class membersignup_Scripts_Styles
 			$this->{$slug} = $value;
 		}
 		// Load public-facing style sheet and JavaScript.
-		$this->filters->add_action('wp_enqueue_scripts', array(
+		$this->functions->add_action('wp_enqueue_scripts', array(
 			$this,
 			'enqueue_styles'
 		));
-		$this->filters->add_action('wp_enqueue_scripts', array(
+		$this->functions->add_action('wp_enqueue_scripts', array(
 			$this,
 			'enqueue_scripts'
 		));
@@ -84,7 +84,7 @@ class membersignup_Scripts_Styles
 		else {
 			$debug_postfix = '';
 		}
-		$this->styles->wp_enqueue_style('membersignup-plugin-styles', $this->functions->plugins_url("assets/css/public{$debug_postfix}.css", __FILE__) , array() , membersignup::VERSION);
+		$this->functions->wp_enqueue_style('membersignup-plugin-styles', $this->functions->plugins_url("assets/css/public{$debug_postfix}.css", __FILE__) , array() , membersignup::VERSION);
 	}
 	/**
 	 * Register and enqueues public-facing JavaScript files.
@@ -101,7 +101,7 @@ class membersignup_Scripts_Styles
 		else {
 			$debug_postfix = '';
 		}
-		$this->scripts->wp_enqueue_script('membersignup-plugin-script', $this->functions->plugins_url("assets/js/public{$debug_postfix}.js", __FILE__) , array(
+		$this->functions->wp_enqueue_script('membersignup-plugin-script', $this->functions->plugins_url("assets/js/public{$debug_postfix}.js", __FILE__) , array(
 			'jquery'
 		) , membersignup::VERSION);
 	}
