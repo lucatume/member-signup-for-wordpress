@@ -181,7 +181,7 @@ class membersignup_Redirect_Controller
 	}
 	public function is_login_page()
 	{
-		$pagenow = $this->functions->globals('pagenow');
+		$pagenow = $this->globals->globals('pagenow');
 		if (isset($pagenow) && $pagenow == 'wp-login.php') {
 			
 			return true;
