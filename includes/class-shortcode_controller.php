@@ -45,10 +45,6 @@ class membersignup_Shortcode_Controller implements adclasses_Singleton
 	}
 	private function __construct($mocks = null)
 	{
-		if (is_array($mocks) && in_array('view', array_keys($mocks))) {
-			$this->view = $mocks['view'];
-			unset($mocks['view']);
-		}
 		// if no mocks are passed
 		if (!is_array($mocks)) {
 			// call factory by itself to get adapters
@@ -56,15 +52,17 @@ class membersignup_Shortcode_Controller implements adclasses_Singleton
 				'functions',
 				'globals'
 			));
+			// get a view instance
+			$mocks['view'] = new membersignup_Shortcode_View();
 		}
 		
 		foreach ($mocks as $slug => $value) {
 			$this->{$slug} = $value;
 		}
-		if (null == $this->view) {
-			$view = new membersignup_Shortcode_View();
+		// if no view was passed among the mocks then instance one
+		if (!isset($this->view)) {
+			$this->view = new membersignup_Shortcode_View();
 		}
-		$this->view = $view;
 		/**
 		 * Add a shortcode to output the member login form in the page
 		 */
@@ -81,6 +79,6 @@ class membersignup_Shortcode_Controller implements adclasses_Singleton
 	 */
 	public function display_login_form($atts, $content = '')
 	{
-		echo $this->view->get_view();
+		return $this->view->get_view();
 	}
 }
