@@ -53,8 +53,6 @@ class membersignup_Redirect_Controller
 		if (!is_array($adapters)) {
 			// call factory by itself
 			$adapters = adclasses_Factory::get_instance()->get_adapters(array(
-				'filters',
-				'options',
 				'functions',
 				'globals'
 			));
@@ -78,11 +76,11 @@ class membersignup_Redirect_Controller
 	public function redirect_to_member_login()
 	{
 		// logged-in users go their usual way
-		if ($this->functions->is_user_logged_in()) 
-		return;
-		// only attempt redirection if visiting the login page
-		$pagenow = $this->globals->pagenow();
-		if (null !== $pagenow && $pagenow != 'wp-login.php') {
+		if ($this->functions->is_user_logged_in()) {
+			
+			return;
+		}
+		if (!$this->should_redirect()) {
 			
 			return;
 		}
@@ -92,10 +90,8 @@ class membersignup_Redirect_Controller
 			
 			return;
 		}
-		if ($this->should_redirect()) {
-			$this->functions->wp_redirect($custom_login_page_url);
-			exit();
-		}
+		$this->functions->wp_redirect($custom_login_page_url);
+		die();
 	}
 	/**
 	 * Check for POST or GET requests to avoid blocking custom login functions
@@ -105,29 +101,93 @@ class membersignup_Redirect_Controller
 	 */
 	public function should_redirect()
 	{
-		// in case of LOGIN
-		if (null !== $this->globals->get_post_var('wp_submit')) {
+		// only attempt redirection if visiting the login page
+		if (!$this->is_login_page()) {
 			
 			return false;
 		}
-		// in case of LOGOUT
-		$action = $this->globals->get_get_var('action');
-		if (null !== $action && $action == 'logout') {
+		if ($this->is_login_page() && $this->is_registering()) {
 			
 			return false;
 		}
-		// in case of LOST PASSWORD
-		$checkemail = $this->globals->get_get_var('checkemail');
-		if (null !== $checkemail && $checkemail == 'confirm') {
+		if ($this->is_login_page() && $this->is_logging_out()) {
 			
 			return false;
 		}
-		if ($checkemail == 'registered') {
+		if ($this->is_wp_submit()) {
+			
+			return false;
+		}
+		if ($this->is_email_confirm()) {
+			
+			return false;
+		}
+		if ($this->is_email_registered()) {
 			
 			return false;
 		}
 		
 		return true;
+	}
+	public function is_email_registered()
+	{
+		$checkemail = $this->globals->get('checkemail');
+		if (isset($checkemail) && $checkemail == 'registered') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function is_email_confirm()
+	{
+		$checkemail = $this->globals->get('checkemail');
+		if (isset($checkemail) && $checkemail == 'confirm') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function is_wp_submit()
+	{
+		$post = $this->globals->post('wp-submit');
+		if (isset($post) && $post == 'wp-submit') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function is_loggin_out()
+	{
+		$action = $this->globals->get('action');
+		if (isset($action) && $action == 'logout') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function is_registering()
+	{
+		$action = $this->globals->get('action');
+		if (isset($action) && $action == 'register') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function is_login_page()
+	{
+		$pagenow = $this->functions->globals('pagenow');
+		if (isset($pagenow) && $pagenow == 'wp-login.php') {
+			
+			return true;
+		}
+		
+		return false;
 	}
 	/**
 	 * Gets the user-set custom login page URL or empty string if not set
