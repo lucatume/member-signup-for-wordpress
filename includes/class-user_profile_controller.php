@@ -65,11 +65,15 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			// TODO: all the fields below should be options
 			// TODO: please make stronger regexes
 			// change the personal profile title
-			$contents = preg_replace("~(<div\\s*id\\s*=\\s*[\"']icon-profile.*<h2>)([^<]*)(</h2>)~uUs", "$1Dati Iscrizione$3", $contents);
+			$user_data = get_userdata(get_current_user_id());
+			$title = sprintf($this->functions->esc_html__('Dati di iscrizione di %1$s %2$s', 'membersignup') , $user_data->user_firstname, $user_data->user_lastname);
+			$contents = preg_replace("~(<div\\s*id\\s*=\\s*[\"']icon-profile.*<h2>)([^<]*)(</h2>)~uUs", "$1" . $title . "$3", $contents);
 			//remove the personal informations title
 			$contents = preg_replace("~(<\\s*form\\s*id\\s*=\\s*['\"]your-profile.*)(<h3>.*)(<h3)~uUs", "$1$3", $contents, 1);
 			// change the username label
-			$contents = preg_replace("~(<label\\s*for\\s*=\\s*['\"]user_login['\"].*>)([^<]*?)(<.*<span class=\"description\">)([^<]*?)~uUs", "$1Codice Fiscale$3Il codice fiscale non puo' essere modificato", $contents);
+			$username_label = $this->functions->esc_html__('Codice Fiscale', 'membersignup');
+			$username_description = $this->functions->esc_html__('Il codice fiscale non puó essere cambiato', 'membersignup');
+			$contents = preg_replace("~(<label\\s*for\\s*=\\s*['\"]user_login['\"].*>)([^<]*?)(<.*<span class=\"description\">)([^<]*?)~uUs", "$1" . $username_label . "$3" . $username_description, $contents);
 			// remove the nickname row
 			// remove the public name row
 			$contents = preg_replace("~<tr>\\s*<th>\\s*<label\\s*for\\s*=['\"]nickname['\"].*</tr>.*display_name.*/tr>~uUs", "", $contents);
