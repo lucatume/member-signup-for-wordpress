@@ -172,7 +172,7 @@ class membersignup
 					switch_to_blog($blog_id);
 					self::single_deactivate();
 				}
-				$hthis->fucntions->restore_current_blog();
+				restore_current_blog();
 			}
 			else {
 				self::single_deactivate();
@@ -215,8 +215,9 @@ class membersignup
 		$sql = "SELECT blog_id FROM $wpdb->blogs
 		WHERE archived = '0' AND spam = '0'
 		AND deleted = '0'";
+		global $wpdb;
 		
-		return $this->globals->$wpdb->get_col($sql);
+		return $wpdb->get_col($sql);
 	}
 	/**
 	 * Fired for each blog when the plugin is activated.
@@ -225,8 +226,19 @@ class membersignup
 	 */
 	private static function single_activate()
 	{
-		//  add the "member" role
-		add_role('member', esc_html__('Member', $domain = $plugin_slug) , array('read'=>true));
+		$user_role_slug = 'member';
+		/**
+		 * Remove the user role if previously defined
+		 */
+		if (get_role($user_role_slug)) {
+			remove_role($user_role_slug);
+		}
+		/**
+		 * Add the member role to the database
+		 */
+		add_role($user_role_slug, esc_html__('Member', 'membersignup') , array(
+			'read' => true
+		));
 	}
 	/**
 	 * Fired for each blog when the plugin is deactivated.
