@@ -58,3 +58,4 @@ add_action( 'init', array( 'membersignup_Scripts_Styles', 'get_instance') );
 add_action( 'init', array( 'membersignup_Settings_Controller', 'get_instance') );
 add_action( 'init', array( 'membersignup_Redirect_Controller', 'get_instance') );
 add_action( 'init', array( 'membersignup_Shortcode_controller', 'get_instance') );
+add_action( 'init', array( 'membersignup_Registration_controller', 'get_instance') );
