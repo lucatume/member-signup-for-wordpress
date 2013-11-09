@@ -74,8 +74,7 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			$username_label = $this->functions->esc_html__('Codice Fiscale', 'membersignup');
 			$username_description = $this->functions->esc_html__('Il codice fiscale non puó essere cambiato', 'membersignup');
 			$contents = preg_replace("~(<label\\s*for\\s*=\\s*['\"]user_login['\"].*>)([^<]*?)(<.*<span class=\"description\">)([^<]*?)~uUs", "$1" . $username_label . "$3" . $username_description, $contents);
-			// remove the nickname row
-			// remove the public name row
+			// remove the nickname and the display name row
 			$contents = preg_replace("~<tr>\\s*<th>\\s*<label\\s*for\\s*=['\"]nickname['\"].*</tr>.*display_name.*/tr>~uUs", "", $contents);
 			// remove the website row
 			$contents = preg_replace("~<tr>\\s*<th>\\s*<label\\s*for\\s*=[\"']url['\"].*</tr>~uUs", "", $contents);
@@ -83,6 +82,8 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			$contents = preg_replace("~<tr>\\s*<th>\\s*<label\\s*for\\s*=[\"']description['\"].*</tr>~uUs", "", $contents);
 			// remove all the titles
 			$contents = preg_replace("~(<\\s*h3\\s*>[^<]*<\\s*/h3\\s*>)\\s*(<\\s*table\\s*class\\s*=\\s*['\"]form-table)~uUs", "$2", $contents);
+			// remove the admin menu
+			$contents = preg_replace("~(<\\s*div\\s*id\\s*=\\s*['\"]adminmenuback.*)(<\\s*div\\s*id\\s*=\\s*['\"]wpcontent)~uUs", "$2", $contents);
 			echo $contents;
 		}
 	}
