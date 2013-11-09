@@ -80,18 +80,21 @@ class membersignup_Redirect_Controller
 			
 			return;
 		}
+		// if the user should not be redirected for any other reason then return
 		if (!$this->should_redirect()) {
 			
 			return;
 		}
-		// do not attempt redirection if the redirect points to the default login page
+		// if the redirect location has not been set or the redirect location is the
+		// default one then return
 		$custom_login_page_url = $this->get_custom_login_page_url();
 		if ($custom_login_page_url == 'default') {
 			
 			return;
 		}
+		// redirect the visitor to the set login page
 		$this->functions->wp_redirect($custom_login_page_url);
-		die();
+		exit();
 	}
 	/**
 	 * Check for POST or GET requests to avoid blocking custom login functions
