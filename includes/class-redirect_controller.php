@@ -132,6 +132,10 @@ class membersignup_Redirect_Controller
 		
 		return true;
 	}
+	/**
+	 * Conditional to check if the actual get request is the checkmail registered one.
+	 * @return boolean True if the get request is checkmail with the registered value, false if there is no checkemail get request or the checkemail get request is not registered.
+	 */
 	public function is_email_registered()
 	{
 		$checkemail = $this->globals->get('checkemail');
@@ -142,6 +146,10 @@ class membersignup_Redirect_Controller
 		
 		return false;
 	}
+	/**
+	 * Conditional to check if the actual get request is the checkmail confirm one.
+	 * @return boolean True if the checkmail request is confirm, false if there is no checkemail get request or the get request is not confirm.
+	 */
 	public function is_email_confirm()
 	{
 		$checkemail = $this->globals->get('checkemail');
@@ -152,6 +160,10 @@ class membersignup_Redirect_Controller
 		
 		return false;
 	}
+	/**
+	 * Conditional to check if the wp-submit post request is defines. Will not check the wp-submit value.
+	 * @return boolean True if the wp-submit post request is not defined.
+	 */	
 	public function is_wp_submit()
 	{
 		$post = $this->globals->post('wp-submit');
@@ -162,6 +174,10 @@ class membersignup_Redirect_Controller
 		
 		return false;
 	}
+	/**
+	 * Conditional to check if the get action is logout.
+	 * @return boolean True if it's logout, false if there is no get action or the get action is not logout.
+	 */
 	public function is_loggin_out()
 	{
 		$action = $this->globals->get('action');
@@ -172,6 +188,10 @@ class membersignup_Redirect_Controller
 		
 		return false;
 	}
+	/**
+	 * Conditional to check if the action is the 'register' one.
+	 * @return boolean True if the action is register, false if there is no get action or the get action is not register.
+	 */
 	public function is_registering()
 	{
 		$action = $this->globals->get('action');
@@ -182,6 +202,10 @@ class membersignup_Redirect_Controller
 		
 		return false;
 	}
+	/**
+	 * Conditional to check if the current page is the login one.
+	 * @return boolean True if it's the login page, false if the requested uri is not 'wp-login.php' or the request method is not 'get'.
+	 */
 	public function is_login_page()
 	{
 		$page = basename($this->functions->server('REQUEST_URI'));
