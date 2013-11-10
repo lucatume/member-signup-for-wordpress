@@ -68,6 +68,47 @@ class membersignup_Redirect_Controller
 			$this,
 			'redirect_to_member_login'
 		));
+		/**
+		 * Add an action to redirect users of the specified type to a certain admin page
+		 */
+		$this->functions->add_action('wp_loaded', array(
+			$this,
+			'redirect_to_profile'
+		));
+	}
+	public function redirect_to_profile()
+	{
+		// not logged in users are not redirected
+		if (!$this->functions->is_user_logged_in()) {
+			
+			return;
+		}
+		// redirect users visiting the wp-admin page
+		if (!$this->functions->is_admin()) {
+			
+			return;
+		}
+		// TODO: where to redirect the user should be an option
+		$path = 'profile.php';
+		// if the request is for the redirection target return
+		// $request_uri = $this->globals->server('REQUEST_URI');
+		// if ($request_uri && $request_uri == "/wp-admin/$path") {
+		// 	return;
+		// }
+		if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] == "/wp-admin/$path") {
+			return;
+		}
+		// TODO: user roles to redirect should be an option
+		// redirect users of the specified roles only
+		$user_roles = ['member', 'subscriber'];
+		
+		foreach ($user_roles as $user_role) {
+			if (membersignup_User_Role_Checker::is_user_of_role($user_role)) {
+				// redirect the user to the profile page
+				$this->functions->wp_redirect($this->functions->admin_url($path));
+				exit();
+			}
+		}
 	}
 	/**
 	 * Redirects not logged-in visitors to a custom login page
@@ -163,7 +204,7 @@ class membersignup_Redirect_Controller
 	/**
 	 * Conditional to check if the wp-submit post request is defines. Will not check the wp-submit value.
 	 * @return boolean True if the wp-submit post request is not defined.
-	 */	
+	 */
 	public function is_wp_submit()
 	{
 		$post = $this->globals->post('wp-submit');
