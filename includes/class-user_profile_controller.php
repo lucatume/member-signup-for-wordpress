@@ -84,6 +84,9 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			$contents = preg_replace("~(<\\s*h3\\s*>[^<]*<\\s*/h3\\s*>)\\s*(<\\s*table\\s*class\\s*=\\s*['\"]form-table)~uUs", "$2", $contents);
 			// remove the admin menu
 			$contents = preg_replace("~(<\\s*div\\s*id\\s*=\\s*['\"]adminmenuback.*)(<\\s*div\\s*id\\s*=\\s*['\"]wpcontent)~uUs", "$2", $contents);
+			// change the button value
+			$button_value = $this->functions->esc_attr__('Aggiorna Dati', 'membersignup');
+			$contents = preg_replace("/(button\\s*button-primary[\"']\\s*value\\s*=['\"])([^\"']*?)/uUs", "$1$button_value", $contents);
 			echo $contents;
 		}
 	}
