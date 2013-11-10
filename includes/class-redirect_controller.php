@@ -95,11 +95,12 @@ class membersignup_Redirect_Controller
 		// TODO: where to redirect the user should be an option
 		$path = 'profile.php';
 		// if the request is for the redirection target return
-		// $request_uri = $this->globals->server('REQUEST_URI');
+		// $request_uri = $this->globals->server['REQUEST_URI'];
 		// if ($request_uri && $request_uri == "/wp-admin/$path") {
 		// 	return;
 		// }
 		if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] == "/wp-admin/$path") {
+			
 			return;
 		}
 		// TODO: user roles to redirect should be an option
@@ -154,14 +155,19 @@ class membersignup_Redirect_Controller
 			
 			return false;
 		}
+		// TODO: redirecting at logout should be an option
+		// redirect users logging out to the page
+		if ($this->is_login_page() && $this->is_logging_out()) {
+			
+			return true;
+		}
 		if ($this->is_login_page() && $this->is_registering()) {
 			
 			return false;
 		}
-		if ($this->is_login_page() && $this->is_logging_out()) {
-			
-			return false;
-		}
+		// if ($this->is_login_page() && $this->is_logging_out()) {
+		// 	return false;
+		// }
 		if ($this->is_wp_submit()) {
 			
 			return false;
@@ -183,7 +189,7 @@ class membersignup_Redirect_Controller
 	 */
 	public function is_email_registered()
 	{
-		$checkemail = $this->globals->get('checkemail');
+		$checkemail = $this->globals->get['checkemail'];
 		if (isset($checkemail) && $checkemail == 'registered') {
 			
 			return true;
@@ -197,7 +203,7 @@ class membersignup_Redirect_Controller
 	 */
 	public function is_email_confirm()
 	{
-		$checkemail = $this->globals->get('checkemail');
+		$checkemail = $this->globals->get['checkemail'];
 		if (isset($checkemail) && $checkemail == 'confirm') {
 			
 			return true;
@@ -211,7 +217,7 @@ class membersignup_Redirect_Controller
 	 */
 	public function is_wp_submit()
 	{
-		$post = $this->globals->post('wp-submit');
+		$post = $this->globals->post['wp-submit'];
 		if (isset($post) && $post == 'wp-submit') {
 			
 			return true;
@@ -223,10 +229,11 @@ class membersignup_Redirect_Controller
 	 * Conditional to check if the get action is logout.
 	 * @return boolean True if it's logout, false if there is no get action or the get action is not logout.
 	 */
-	public function is_loggin_out()
+	public function is_logging_out()
 	{
-		$action = $this->globals->get('action');
-		if (isset($action) && $action == 'logout') {
+		// TODO find a way to not use the direct variable
+		$loggedout = $this->globals->get['loggedout'];
+		if (isset($loggedout) && $loggedout == true) {
 			
 			return true;
 		}
@@ -239,7 +246,7 @@ class membersignup_Redirect_Controller
 	 */
 	public function is_registering()
 	{
-		$action = $this->globals->get('action');
+		$action = $this->globals->get['action'];
 		if (isset($action) && $action == 'register') {
 			
 			return true;
@@ -253,9 +260,9 @@ class membersignup_Redirect_Controller
 	 */
 	public function is_login_page()
 	{
-		$page = basename($this->functions->server('REQUEST_URI'));
-		$request_method = $this->functions->server('REQUEST_METHOD');
-		if (null !== $page && $page == 'wp-login.php' && nul !== $request_method && $request_method == 'GET') {
+		$page = $this->globals->server['REQUEST_URI'];
+		$request_method = $this->globals->server['REQUEST_METHOD'];
+		if (null !== $page && strpos($page, 'wp-login.php') && null !== $request_method && $request_method == 'GET') {
 			
 			return true;
 		}
