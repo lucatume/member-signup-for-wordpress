@@ -179,7 +179,7 @@ class membersignup_Settings_Controller
 	 */
 	public function validate_options($input)
 	{
-		
+		// right now there are no options that need validation
 		return $input;
 	}
 }

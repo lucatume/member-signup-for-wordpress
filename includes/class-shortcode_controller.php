@@ -43,6 +43,10 @@ class membersignup_Shortcode_Controller implements adclasses_Singleton
 			self::$instance = null;
 		}
 	}
+	/**
+	 * Creates and returns an instance of the shortcode controller class
+	 * @param array $mocks An array of already isntantiated adapter class objects. Used for mocking and injection.
+	 */
 	private function __construct($mocks = null)
 	{
 		// if no mocks are passed

@@ -22,6 +22,10 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 		
 		return self::$instance;
 	}
+	/**
+	 * Creates and returns an instance of the user profile controller class.
+	 * @param array $adapters An arrayo of already instatiated adapter class objects. Used in mocking and injection.
+	 */
 	private function __construct($adapters = null)
 	{
 		if (!is_array($adapters)) {
@@ -44,12 +48,20 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			'end_profile_buffer'
 		));
 	}
+	/**
+	 * Sets the current singleton instance to null.
+	 * @return none
+	 */
 	public static function unset_instance()
 	{
 		if (isset(self::$instance)) {
 			self::$instance = null;
 		}
 	}
+	/**
+	 * Activates the output buffering.
+	 * @return none
+	 */
 	public function start_profile_buffer()
 	{
 		if ($this->should_modify_profile_fields()) {
@@ -57,6 +69,10 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			ob_start();
 		}
 	}
+	/**
+	 * Deactivates the output buffering and modifies it to the user settings.
+	 * @return none Echoes the profile HTML markup to the page.
+	 */
 	public function end_profile_buffer()
 	{
 		if ($this->should_modify_profile_fields()) {
@@ -90,6 +106,10 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			echo $contents;
 		}
 	}
+	/**
+	 * Conditional to check if the profile should be modified.
+	 * @return bool True if eligible for profile modification, false otherwise.
+	 */
 	public function should_modify_profile_fields()
 	{
 		// TODO: do some REAL check here

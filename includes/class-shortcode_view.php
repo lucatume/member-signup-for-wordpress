@@ -1,6 +1,10 @@
 <?php
 class membersignup_Shortcode_View
 {
+	/**
+	 * Creates and returns an instance of the shortcode view class
+	 * @param array $adapters An array of already instantiated adapter class objects. Used for mocking and injection.
+	 */
 	public function __construct($adapters = null)
 	{
 		if (!is_array($adapters)) {
@@ -14,6 +18,10 @@ class membersignup_Shortcode_View
 			$this->{$key} = $value;
 		}
 	}
+	/**
+	 * Returns the shortcode markup.
+	 * @return string The HTML markup code for the shortcode.
+	 */
 	public function get_view()
 	{
 		// TODO: signup section header for logged-in users should be an option
@@ -53,7 +61,11 @@ class membersignup_Shortcode_View
 		
 		return $this->signup_view();
 	}
-	public function signup_view()
+	/**
+	 * Utility function to render the shortcode HTML markup code.
+	 * @return string The HTML markup for the shortcode view.
+	 */
+	private function signup_view()
 	{
 		ob_start();
 		?>
