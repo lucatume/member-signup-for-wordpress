@@ -22,38 +22,56 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 		
 		return self::$instance;
 	}
-	private function __construct($adapters= null){
+	private function __construct($adapters = null)
+	{
 		if (!is_array($adapters)) {
 			// instance the adapters by itself
-			$adapters = adclasses_Factory::get_instance()->get_adapters(array('functions','globals'));
+			$adapters = adclasses_Factory::get_instance()->get_adapters(array(
+				'functions',
+				'globals'
+			));
 		}
+		
 		foreach ($adapters as $key => $value) {
 			$this->{$key} = $value;
 		}
-
 		/**
 		 * Hook into the register filter to be able to customize the register and admin links
 		 */
 		$this->functions->add_filter('register', array(
 			$this,
 			'customize_register_link_text'
-			));
+		));
 		/**
 		 * Hook into the login header to buffer the registration form output
 		 */
-		$this->functions->add_action('login_head', array($this, 'start_output_buffering'));
+		$this->functions->add_action('login_head', array(
+			$this,
+			'start_output_buffering'
+		));
 		/**
 		 * Hook into the login footer to end output buffering and return the form output
 		 */
-		$this->functions->add_action('login_footer', array($this, 'end_output_buffering'));
-		
+		$this->functions->add_action('login_footer', array(
+			$this,
+			'end_output_buffering'
+		));
 	}
+	/**
+	 * Unsets the static instance variable
+	 * @return none
+	 */
 	public static function unset_instance()
 	{
 		if (isset(self::$instance)) {
 			unset(self::$instance);
 		}
 	}
+	/**
+	 * Customizes the text of the register link
+	 * @param  string $link The link to the registration page
+	 * @return string       The modified link
+	 */
 	public function customize_register_link_text($link)
 	{
 		$link_text = '';
@@ -65,7 +83,9 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 		}
 		else {
 			// TODO: make string below eng
-			$link_text = $this->functions->esc_html__('Oppure registra un nuovo socio', 'membersignup');
+			$link_text = '<h4>';
+			$link_text.= $this->functions->esc_html__('Oppure registra un nuovo socio', 'membersignup');
+			$link_text.= '</h4>';
 		}
 		// replace the link text
 		
@@ -77,11 +97,11 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 	 * http://core.trac.wordpress.org/browser/tags/3.7.1/src/wp-login.php#L0
 	 * @return none
 	 */
-	public function start_output_buffering(){
+	public function start_output_buffering()
+	{
 		if ($this->is_register_page()) {
 			ob_start();
 		}
-		
 	}
 	/**
 	 * Ends output buffering for the registration page and returns the modified registration form
@@ -89,16 +109,16 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 	 * http://core.trac.wordpress.org/browser/tags/3.7.1/src/wp-login.php#L0
 	 * @return string 	The registration form markup
 	 */
-	public function end_output_buffering(){
+	public function end_output_buffering()
+	{
 		if ($this->is_register_page()) {
-
 			$contents = ob_get_contents();
 			ob_end_clean();
 			// replace the user login label
 			// TODO: should be an option
 			// TODO: should be english
-			$user_login_label = $this->functions->esc_html__( 'Codice fiscale della persona che si vuole iscrivere', 'membersignup' );
-			$contents = preg_replace("~(<label\\s*for\\s*=[\"']\\s*user_login\\s*[\"']\\s*>)([^<]*?)~uU", "$1".$user_login_label, $contents);
+			$user_login_label = $this->functions->esc_html__('Codice fiscale della persona che si vuole iscrivere', 'membersignup');
+			$contents = preg_replace("~(<label\\s*for\\s*=[\"']\\s*user_login\\s*[\"']\\s*>)([^<]*?)~uU", "$1" . $user_login_label, $contents);
 			echo $contents;
 		}
 	}
@@ -106,14 +126,17 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 	 * Checks if the current page is the registration one and the user is visiting to register.
 	 * @return boolean True if it's the registration page and the user is visiting to register, false otherwise.
 	 */
-	public function is_register_page(){
-		if ( null !== $_REQUEST['action'] && $_REQUEST['action'] == 'register') {
+	public function is_register_page()
+	{
+		if (null !== $_REQUEST['action'] && $_REQUEST['action'] == 'register') {
+			
 			return true;
 		}
 		
 		return false;
 	}
-	public function customize_registration_fields(){
+	public function customize_registration_fields()
+	{
 		$content = ob_get_contents();
 		$contents = 'register me';
 		$content = ob_get_clean();
