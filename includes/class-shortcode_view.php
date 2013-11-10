@@ -25,7 +25,7 @@ class membersignup_Shortcode_View
 		else {
 			// TODO: signup section header for not logged-in users should be an option
 			// TODO: should be english
-			$this->signup_section_header = $this->functions->esc_html__('Iscrizione', 'membersignup');
+			$this->signup_section_header = $this->functions->esc_html__('Accedi all\'anagrafica', 'membersignup');
 		}
 		// get the registration links markup
 		$this->signup_registration_link = $this->functions->wp_register('', '', false);
@@ -47,7 +47,7 @@ class membersignup_Shortcode_View
 		else {
 			$logout_url = wp_logout_url(get_permalink());
 			// TODO: text below should be english
-			$logout_text = $this->functions->esc_html__('Esci ed accedi come altro socio o iscrivi un nuovo socio', 'membersignup');
+			$logout_text = $this->functions->esc_html__('Esci ed accedi come altro socio od iscrivi un nuovo socio', 'membersignup');
 			$this->login_form_or_register_link = '<a href="' . $logout_url . '" title="Logout">' . $logout_text . '</a>';
 		}
 		
