@@ -76,6 +76,10 @@ class membersignup_Redirect_Controller
 			'redirect_to_profile'
 		));
 	}
+	/**
+	 * Redirects some users to the profile page anytime they access the admin section
+	 * @return none
+	 */
 	public function redirect_to_profile()
 	{
 		// not logged in users are not redirected

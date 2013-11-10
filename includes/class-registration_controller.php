@@ -22,6 +22,10 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 		
 		return self::$instance;
 	}
+	/**
+	 * Creates an instance of the Registration Controller class
+	 * @param array $adapters An array containing already instantiated adapters. Used for mocking.
+	 */
 	private function __construct($adapters = null)
 	{
 		if (!is_array($adapters)) {
@@ -134,13 +138,6 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 		}
 		
 		return false;
-	}
-	public function customize_registration_fields()
-	{
-		$content = ob_get_contents();
-		$contents = 'register me';
-		$content = ob_get_clean();
-		echo $content;
 	}
 }
 ?>
