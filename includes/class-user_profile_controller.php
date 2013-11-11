@@ -107,7 +107,7 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			// remove the bio section
 			$contents = preg_replace("~<tr>\\s*<th>\\s*<label\\s*for\\s*=[\"']description['\"].*</tr>~uUs", "", $contents);
 			// remove all the titles
-			$contents = preg_replace("~(<\\s*h3\\s*>[^<]*<\\s*/h3\\s*>)\\s*(<\\s*table\\s*class\\s*=\\s*['\"]form-table)~uUs", "$2", $contents);
+			$contents = preg_replace("~(<\\s*h3\\s*>[^<]*<\\s*/h3\\s*>)\\s*(<\\s*table\\s*class\\s*=\\s*['\"]form-table)~uUs", "$2", $contents, 3);
 			// remove the admin menu
 			$contents = preg_replace("~(<\\s*div\\s*id\\s*=\\s*['\"]adminmenuback.*)(<\\s*div\\s*id\\s*=\\s*['\"]wpcontent)~uUs", "$2", $contents);
 			// change the button value
