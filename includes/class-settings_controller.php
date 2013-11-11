@@ -118,7 +118,7 @@ class membersignup_Settings_Controller
 	{
 		
 		return array_merge(array(
-			'settings' => '<a href="' . $this->functions->admin_url('options-general.php?page=' . $this->plugin_slug) . '">' . __('Settings', $this->plugin_slug) . '</a>'
+			'settings' => '<a href="' . $this->functions->admin_url('options-general.php?page=' . 'membersignup') . '">' . __('Settings', 'membersignup') . '</a>'
 		) , $links);
 	}
 	/**
