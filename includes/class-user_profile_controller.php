@@ -39,6 +39,9 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 		foreach ($adapters as $key => $value) {
 			$this->{$key} = $value;
 		}
+		/**
+		 * Hooks
+		 */
 		$this->functions->add_action('admin_head', array(
 			$this,
 			'start_profile_buffer'
@@ -46,6 +49,13 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 		$this->functions->add_action('admin_footer', array(
 			$this,
 			'end_profile_buffer'
+		));
+		/**
+		 * Filters
+		 */
+		$this->functions->add_filter('user_contactmethods', array(
+			$this,
+			'remove_contact_methods'
 		));
 	}
 	/**
@@ -129,6 +139,38 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 		}
 		
 		return false;
+	}
+	/**
+	 * Removes unwanted user contact methods for some user roles
+	 * @param  array $contact_methods The array of set contact methods as returned by the WordPress filter
+	 * @return array                  The modified user contact methods array
+	 */
+	public function remove_contact_methods($contact_methods)
+	{
+		// TODO: the users to apply the contact method stripping to should be an option
+		$roles = array(
+			'subscriber',
+			'member'
+		);
+		
+		foreach ($roles as $role) {
+			if (membersignup_User_Role_Checker::is_user_of_role($role)) {
+				// TODO: what contact methods to remove should be an option
+				$contact_methods_slugs_to_unset = array(
+					'aim',
+					'yim',
+					'jabber'
+				);
+				
+				foreach ($contact_methods_slugs_to_unset as $key) {
+					if (isset($contact_methods[$key])) {
+						unset($contact_methods[$key]);
+					}
+				}
+			}
+		}
+		
+		return $contact_methods;
 	}
 }
 ?>
