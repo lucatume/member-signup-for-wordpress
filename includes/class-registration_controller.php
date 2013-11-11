@@ -132,7 +132,8 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 	 */
 	public function is_register_page()
 	{
-		if (null !== $_REQUEST['action'] && $_REQUEST['action'] == 'register') {
+		$action = $this->globals->request['action'];
+		if ($action and $action == 'register') {
 			
 			return true;
 		}
