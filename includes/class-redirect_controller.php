@@ -105,7 +105,7 @@ class membersignup_Redirect_Controller
 		}
 		// TODO: user roles to redirect should be an option
 		// redirect users of the specified roles only
-		$user_roles = ['member', 'subscriber'];
+		$user_roles = array('member', 'subscriber');
 		
 		foreach ($user_roles as $user_role) {
 			if (membersignup_User_Role_Checker::is_user_of_role($user_role)) {
