@@ -88,7 +88,7 @@ class membersignup_Registration_Controller implements adclasses_Singleton
 		else {
 			// TODO: make string below eng
 			$link_text = '<h4>';
-			$link_text.= $this->functions->esc_html__('Oppure registra un nuovo socio', 'membersignup');
+			$link_text.= $this->functions->esc_html__('Iscrivi un altro socio alla Sezione di Bologna (sia nuova iscrizione che rinnovo)', 'membersignup');
 			$link_text.= '</h4>';
 		}
 		// replace the link text
