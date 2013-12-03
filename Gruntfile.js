@@ -23,6 +23,12 @@ module.exports = function( grunt ) {
 					'assets/js/src/admin.js'
 				],
 				dest: 'assets/js/admin.js'
+			},
+			member_signup_modal_confirmation: {
+				src: [
+				'assets/js/src/modalUserDataUpdateConfirmation.js'
+				],
+				dest: 'assets/js/modalUserDataUpdateConfirmation.js'
 			}
 		},
 		jshint: {
@@ -52,7 +58,8 @@ module.exports = function( grunt ) {
 			all: {
 				files: {
 					'assets/js/admin.min.js': ['assets/js/admin.js'],
-					'assets/js/public.min.js': ['assets/js/public.js']
+					'assets/js/public.min.js': ['assets/js/public.js'],
+					'assets/js/modalUserDataUpdateConfirmation.min.js' : ['assets/js/modalUserDataUpdateConfirmation.js']
 				},
 				options: {
 					banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
