@@ -50,6 +50,18 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 			$this,
 			'end_profile_buffer'
 		));
+		$this->functions->add_action('admin_init', array(
+			$this,
+			'maybeEnqueueModalConfirmationScript'
+		));
+		$this->functions->add_action('personal_options_update', array(
+			$this,
+			'setFirstCompile'
+		));
+		$this->functions->add_action('show_user_profile', array(
+			$this,
+			'maybeAppendDataUpdateConfirmationDialog'
+		));
 		/**
 		 * Filters
 		 */
@@ -172,5 +184,91 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 		
 		return $contact_methods;
 	}
+	/**
+	 * Enqueues the modal confirmation script when necessary
+	 * @return bool True if the modal confirmation script was enqueued, false otherwise
+	 */
+	public function maybeEnqueueModalConfirmationScript()
+	{
+		// if the user is not a target return
+		// if (!$this->isUserTarget()) {
+		// 	return false;
+		// }
+		// register the script
+		$src = MEMBERSIGNUP_PLUGIN_URL . 'assets/js/modalUserDataUpdateConfirmation.min.js';
+		$handle = 'modalConfirmation';
+		$this->functions->wp_register_script($handle, $src, array(
+			'jquery-ui-dialog'
+		));
+		// enqueue the script
+		$this->functions->wp_enqueue_script($handle);
+		// enqueue WordPress default dialog style
+		$this->functions->wp_enqueue_style( 'dialogStyle', 'http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css');
+		$this->functions->wp_enqueue_style('wp-jquery-ui-dialog');
+		
+		return true;
+	}
+	/**
+	 * Conditional to check if the user has just updated its profile
+	 * @return bool True if the user updated its profile, false otherwise.
+	 */
+	public function isUserFirstCompilation()
+	{
+		// get the value of the meta key that keeps track
+		// of first compilation
+		$userId = $this->functions->get_current_user_id();
+		$key = 'firstCompile';
+		$firstCompile = $this->functions->get_user_meta($userId, $key, true);
+		if (is_null($firstCompile) or $firstCompile == 'yes') {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	public function setFirstCompile()
+	{
+		$userId = $this->functions->get_current_user_id();
+		$key = 'firstCompile';
+		$this->functions->update_user_meta($userId, $key, 'no');
+	}
+	public function isUserTarget()
+	{
+		$roles = array(
+			'member',
+			'subscriber'
+		);
+		
+		foreach ($roles as $role) {
+			if (membersignup_User_Role_Checker::is_user_of_role($role)) {
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public function maybeAppendDataUpdateConfirmationDialog()
+	{
+		if (!$this->isUserTarget()) {
+			
+			return false;
+		}
+		// TODO: messages and title should be options
+		$confirmationDialogTitle = $this->functions->esc_html('Dati salvati');
+		$updateMessage = $this->functions->esc_html('Le modifiche sono state salvate, grazie.');
+		$firstEntryMessage = $this->functions->esc_html("La iscrizione è stata registrata ed i dati sono stati salvati correttamente, grazie.\nÈ possibile modificarli in ogni momento se necessario.");
+		$confirmationDialogMessage = null;
+		// TODO: button text should be an option
+		if ($this->isUserFirstCompilation()) {
+			$confirmationDialogMessage = $firstEntryMessage;
+		}
+		else {
+			$confirmationDialogMessage = $updateMessage;
+		}
+		// include the view
+		include_once (MEMBERSIGNUP_PLUGIN_DIRPATH . 'includes/views/userDataUpdateConfirmationDialog.php');
+		
+		return true;
+	}
 }
-?>
