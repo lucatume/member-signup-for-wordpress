@@ -191,9 +191,9 @@ class membersignup_User_Profile_Controller implements adclasses_Singleton
 	public function maybeEnqueueModalConfirmationScript()
 	{
 		// if the user is not a target return
-		// if (!$this->isUserTarget()) {
-		// 	return false;
-		// }
+		if (!$this->isUserTarget()) {
+			return false;
+		}
 		// register the script
 		$src = MEMBERSIGNUP_PLUGIN_URL . 'assets/js/modalUserDataUpdateConfirmation.min.js';
 		$handle = 'modalConfirmation';
