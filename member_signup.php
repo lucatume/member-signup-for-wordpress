@@ -28,9 +28,17 @@ if (!defined('WPINC')) {
 	die;
 }
 /**
+ * To deal with symbolic linking in local development
+ * @var string
+ */
+$pathToThisFile = __FILE__;
+// if (defined('DEV') and 'DEV' == true) {
+// 	$pathToThisFile = basename(dirname(__FILE__) . '\\' . basename(__FILE__));
+// }
+/**
  * Useful constants
  */
-define('MEMBERSIGNUP_PLUGIN_FILE', basename(dirname(__FILE__) . '\\' . basename(__FILE__)));
+define('MEMBERSIGNUP_PLUGIN_FILE', $pathToThisFile);
 define('MEMBERSIGNUP_PLUGIN_URL', plugin_dir_url(MEMBERSIGNUP_PLUGIN_FILE));
 define('MEMBERSIGNUP_PLUGIN_DIRPATH', plugin_dir_path(__FILE__));
 define('MEMBERSIGNUP_PLUGIN_DIRNAME', dirname(__FILE__));
